@@ -144,3 +144,4 @@ pulagam baby Shanmukha syamala
 * Mobile app version
 
 ---
+<!-- © 2026 Pulagam Baby Shanmukha Syamala. All Rights Reserved. -->
