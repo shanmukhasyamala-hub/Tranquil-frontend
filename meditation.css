@@ -1,0 +1,46 @@
+/* Meditation Module Styles - Safe to add, doesn't affect existing */
+
+.meditation-circle {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--purple-bg), var(--purple-light));
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 30px rgba(124,111,205,0.3);
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.meditation-circle.meditating {
+  animation: meditationPulse 4s ease-in-out infinite;
+}
+
+@keyframes meditationPulse {
+  0%, 100% { transform: scale(1); box-shadow: 0 8px 30px rgba(124,111,205,0.3); }
+  50% { transform: scale(1.05); box-shadow: 0 15px 40px rgba(124,111,205,0.5); }
+}
+
+.meditation-time {
+  font-family: 'Playfair Display', serif;
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--purple);
+  line-height: 1;
+}
+
+.meditation-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text2);
+  margin-top: 8px;
+}
+
+.quick-card small {
+  font-size: 0.65rem;
+  color: var(--text3);
+  font-weight: normal;
+}

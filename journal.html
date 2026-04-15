@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – Journal</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <h1 class="page-title">Mood Journal 📔</h1>
+    <p class="page-subtitle">How are you feeling right now?</p>
+
+    <!-- TODAY CHECK-IN -->
+    <div class="card card-pad" style="margin-bottom:20px;">
+      <div style="font-size:0.85rem;font-weight:700;margin-bottom:12px;">Today's Check-in</div>
+      <div class="mood-row" id="moodRow">
+        <button class="mood-btn" data-mood="Great"    onclick="selectMood(this)"><span class="mood-emoji">😁</span><span class="mood-label">Great</span></button>
+        <button class="mood-btn" data-mood="Good"     onclick="selectMood(this)"><span class="mood-emoji">🙂</span><span class="mood-label">Good</span></button>
+        <button class="mood-btn" data-mood="Okay"     onclick="selectMood(this)"><span class="mood-emoji">😐</span><span class="mood-label">Okay</span></button>
+        <button class="mood-btn" data-mood="Low"      onclick="selectMood(this)"><span class="mood-emoji">😔</span><span class="mood-label">Low</span></button>
+        <button class="mood-btn" data-mood="Stressed" onclick="selectMood(this)"><span class="mood-emoji">😰</span><span class="mood-label">Stressed</span></button>
+      </div>
+
+      <!-- NOTE INPUT (shown after mood pick) -->
+      <div id="noteSection" style="display:none;margin-top:14px;">
+        <textarea class="input-field" id="noteInput" placeholder="Add a note (optional)..."
+          rows="3" style="resize:none;border-radius:12px;"></textarea>
+        <button class="btn btn-primary btn-full" style="margin-top:10px;" onclick="submitEntry()">
+          Save Entry ✓
+        </button>
+      </div>
+    </div>
+
+    <!-- THIS WEEK -->
+    <div class="section-label">THIS WEEK</div>
+    <div id="weekEntries">
+      <div class="journal-empty" id="emptyState">
+        <span class="empty-icon">📭</span>
+        No entries this week yet
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item active" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+  let selectedMood = null;
+
+  const moodColors = {
+    'Great':'#5bbf8a','Good':'#4db8a4','Okay':'#f5c842','Low':'#f4845f','Stressed':'#e85c5c'
+  };
+  const moodEmojis = { 'Great':'😁','Good':'🙂','Okay':'😐','Low':'😔','Stressed':'😰' };
+
+  function selectMood(btn) {
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedMood = btn.dataset.mood;
+    const noteSection = document.getElementById('noteSection');
+    const noteInput = document.getElementById('noteInput');
+    if (noteSection) noteSection.style.display = 'block';
+    if (noteInput) noteInput.focus();
+  }
+
+  function submitEntry() {
+    if (!selectedMood) return;
+    const note = document.getElementById('noteInput') ? document.getElementById('noteInput').value.trim() : '';
+    addMoodEntry(selectedMood, note);
+    const noteSection = document.getElementById('noteSection');
+    const noteInput = document.getElementById('noteInput');
+    if (noteSection) noteSection.style.display = 'none';
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    if (noteInput) noteInput.value = '';
+    const moodValue = selectedMood;
+    selectedMood = null;
+    loadEntries();
+    if (typeof showToast !== 'undefined') {
+      showToast('✓ Mood logged: ' + moodValue);
+    }
+  }
+
+  function loadEntries() {
+    const entries = getMoodJournal();
+    const now = Date.now();
+    const weekAgo = now - 7 * 86400000;
+    const weekEntries = entries.filter(e => e.ts >= weekAgo);
+    const container = document.getElementById('weekEntries');
+    const empty = document.getElementById('emptyState');
+    
+    if (!container) return;
+    
+    if (!weekEntries.length) { 
+      if (empty) empty.style.display = 'block'; 
+      return; 
+    }
+    if (empty) empty.style.display = 'none';
+    container.innerHTML = '';
+    weekEntries.forEach(e => {
+      const div = document.createElement('div');
+      div.className = 'journal-entry';
+      div.style.borderLeftColor = moodColors[e.mood] || 'var(--purple)';
+      div.innerHTML = `
+        <div class="entry-header">
+          <span class="entry-mood">${moodEmojis[e.mood] || ''} ${e.mood}</span>
+          <span class="entry-date">${formatDate(e.ts)}</span>
+        </div>
+        ${e.note ? `<div class="entry-note">${e.note}</div>` : ''}
+      `;
+      container.appendChild(div);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', loadEntries);
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

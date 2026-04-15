@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – AI Tips</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn active" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <h1 class="page-title">AI Tips 💡</h1>
+    <p class="page-subtitle">Personalized wellness guidance for you</p>
+
+    <div class="section-label">TODAY'S WELLNESS TIPS</div>
+
+    <div id="tipsList">
+      <div class="tip-card">
+        <div class="tip-icon-wrap" style="background:#dff0ff;">💧</div>
+        <div class="tip-content">
+          <div class="tip-title">Stay Hydrated</div>
+          <div class="tip-desc">Drink at least 8 glasses of water daily to reduce stress and improve focus.</div>
+          <span class="pill pill-teal" style="margin-top:6px;display:inline-block;">Wellness</span>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon-wrap" style="background:#fff0e0;">☕</div>
+        <div class="tip-content">
+          <div class="tip-title">Take a Break</div>
+          <div class="tip-desc">Step away from your work for 5 minutes to clear your mind and reset.</div>
+          <span class="pill pill-orange" style="margin-top:6px;display:inline-block;">Break</span>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon-wrap" style="background:#e8f8f0;">🌬️</div>
+        <div class="tip-content">
+          <div class="tip-title">Deep Breathing</div>
+          <div class="tip-desc">Practice deep breathing exercises to lower your stress levels.</div>
+          <span class="pill pill-green" style="margin-top:6px;display:inline-block;">Breathing</span>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon-wrap" style="background:#f0e8ff;">🚶</div>
+        <div class="tip-content">
+          <div class="tip-title">Move Your Body</div>
+          <div class="tip-desc">Stand up and stretch or take a short walk to release tension.</div>
+          <span class="pill pill-purple" style="margin-top:6px;display:inline-block;">Movement</span>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon-wrap" style="background:#fff8e0;">🥗</div>
+        <div class="tip-content">
+          <div class="tip-title">Healthy Snacks</div>
+          <div class="tip-desc">Eat a healthy snack to maintain energy and reduce anxiety.</div>
+          <span class="pill pill-green" style="margin-top:6px;display:inline-block;">Nutrition</span>
+        </div>
+      </div>
+      <div class="tip-card">
+        <div class="tip-icon-wrap" style="background:#ede9fa;">🧘</div>
+        <div class="tip-content">
+          <div class="tip-title">Mindfulness</div>
+          <div class="tip-desc">Take a moment to be present and aware of your thoughts and feelings.</div>
+          <span class="pill pill-purple" style="margin-top:6px;display:inline-block;">Mindfulness</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SMART REMINDERS -->
+    <div class="section-label" style="margin-top:20px;">SMART REMINDERS</div>
+    <p style="font-size:0.82rem;color:var(--text2);margin-bottom:12px;">
+      Enable reminders to stay on top of your wellness routine
+    </p>
+    <div class="toggle-row">
+      <div class="toggle-left"><span class="toggle-icon">💧</span><span class="toggle-name">Hydration Reminder</span></div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="hydToggle" checked onchange="saveTipSetting('hydration',this.checked)"/>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-left"><span class="toggle-icon">☕</span><span class="toggle-name">Take a Break</span></div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="breakToggle2" checked onchange="saveTipSetting('break',this.checked)"/>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+    <div class="toggle-row">
+      <div class="toggle-left"><span class="toggle-icon">🧘</span><span class="toggle-name">Stretch Reminder</span></div>
+      <label class="toggle-switch">
+        <input type="checkbox" id="stretchToggle2" checked onchange="saveTipSetting('stretch',this.checked)"/>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <!-- DAILY INSIGHT -->
+    <div class="daily-insight" style="margin-top:20px;">
+      <strong style="font-size:0.85rem;">🌟 Daily Insight</strong>
+      <p style="margin-top:6px;" id="dailyInsight">
+        Consistent small habits — like drinking water, taking short breaks,
+        and practicing breathing — can reduce stress levels by up to 40% over time. Keep going!
+      </p>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+    const s = getSettings();
+    const hydToggle = document.getElementById('hydToggle');
+    const breakToggle2 = document.getElementById('breakToggle2');
+    const stretchToggle2 = document.getElementById('stretchToggle2');
+    
+    if (hydToggle) hydToggle.checked = s.hydration;
+    if (breakToggle2) breakToggle2.checked = s.breakReminder;
+    if (stretchToggle2) stretchToggle2.checked = s.stretchReminder;
+
+    // Personalize insight based on stress
+    const logs = getStressLogs();
+    if (logs.length > 5) {
+      const avg = Math.round(logs.slice(-10).reduce((s,l)=>s+l.score,0)/Math.min(10,logs.length));
+      const insightEl = document.getElementById('dailyInsight');
+      if (insightEl) {
+        if (avg > 60) {
+          insightEl.textContent = 'Your stress has been elevated lately. Try the 4-7-8 breathing technique — even 3 rounds can bring significant relief!';
+        } else if (avg < 30) {
+          insightEl.textContent = 'Your stress levels look great this week! Keep up your mindfulness habits — you\'re doing amazing!';
+        }
+      }
+    }
+  });
+
+  function saveTipSetting(key, val) {
+    const s = getSettings();
+    if (key === 'hydration') s.hydration = val;
+    if (key === 'break')     s.breakReminder = val;
+    if (key === 'stretch')   s.stretchReminder = val;
+    saveSettings(s);
+    if (typeof showToast !== 'undefined') showToast('✓ Reminder ' + (val ? 'enabled' : 'disabled'));
+  }
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

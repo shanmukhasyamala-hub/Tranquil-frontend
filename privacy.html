@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – Privacy &amp; Data</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    /* ── BOTTOM SHEET MODAL ── */
+    .sheet-overlay {
+      position: fixed; inset: 0; z-index: 700;
+      background: rgba(20,26,45,0.5);
+      backdrop-filter: blur(4px);
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .sheet-overlay.hidden { display: none; }
+    .sheet-box {
+      background: white; border-radius: 28px 28px 0 0;
+      width: 100%; max-width: var(--max-w);
+      padding: 28px 24px 36px;
+      animation: slideUp 0.32s ease;
+      max-height: 90dvh; overflow-y: auto;
+    }
+    .sheet-header {
+      display: flex; align-items: flex-start; justify-content: space-between;
+      margin-bottom: 6px;
+    }
+    .sheet-title { font-size: 1.3rem; font-weight: 800; }
+    .sheet-sub   { font-size: 0.83rem; color: var(--text2); margin-bottom: 20px; }
+    .sheet-close {
+      width: 32px; height: 32px; border-radius: 50%;
+      background: var(--bg); border: none; cursor: pointer;
+      font-size: 1rem; color: var(--text2); flex-shrink: 0;
+    }
+
+    /* CHECKBOX ITEMS */
+    .check-item {
+      display: flex; align-items: center; gap: 14px;
+      padding: 15px 18px; border-radius: var(--radius-sm);
+      background: white; border: 1.5px solid rgba(200,210,230,0.5);
+      margin-bottom: 8px; cursor: pointer; transition: all 0.2s;
+    }
+    .check-item:hover { background: var(--purple-bg); }
+    .check-item.checked { border-color: var(--purple); background: var(--purple-bg); }
+    .check-box {
+      width: 22px; height: 22px; border-radius: 6px;
+      border: 2px solid rgba(180,190,220,0.7);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; transition: all 0.2s; font-size: 0.8rem;
+    }
+    .check-item.checked .check-box { background: var(--purple); border-color: var(--purple); color: white; }
+    .check-name { font-size: 0.92rem; font-weight: 700; }
+
+    .del-btn {
+      width: 100%; padding: 16px;
+      background: #f4845f; color: white;
+      border: none; border-radius: var(--radius-sm);
+      font-family: 'Nunito', sans-serif; font-size: 0.95rem; font-weight: 800;
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: center; gap: 8px; margin-bottom: 12px;
+      transition: background 0.2s;
+    }
+    .del-btn:hover { background: #e06040; }
+    .del-btn:disabled { background: #d0c8e8; cursor: default; }
+
+    .cancel-link {
+      display: block; text-align: center;
+      font-size: 0.9rem; font-weight: 800;
+      color: var(--text2); cursor: pointer; padding: 8px;
+    }
+
+    /* DEVICES LIST */
+    .device-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 14px 16px; background: white;
+      border-radius: var(--radius-sm);
+      border: 1px solid rgba(200,210,230,0.4);
+      margin-bottom: 8px;
+    }
+    .device-item-icon { font-size: 1.1rem; }
+    .device-item-info { flex: 1; }
+    .device-item-name { font-size: 0.92rem; font-weight: 800; }
+    .device-item-sub  { font-size: 0.75rem; color: var(--text3); margin-top: 2px; }
+    .remove-device-btn {
+      background: none; border: none; cursor: pointer;
+      color: #e85c5c; font-size: 1.1rem; padding: 4px;
+      transition: transform 0.15s;
+    }
+    .remove-device-btn:hover { transform: scale(1.2); }
+
+    /* POLICY MODAL */
+    .policy-text { font-size: 0.87rem; color: var(--text2); line-height: 1.7; }
+    .policy-text strong { color: var(--text); }
+    .policy-block { margin-bottom: 16px; }
+    .policy-meta  {
+      font-size: 0.75rem; color: var(--text3); text-align: center;
+      margin-bottom: 18px; letter-spacing: 0.03em;
+    }
+
+    /* ===== EXACT DARK MODE STYLES FOR PRIVACY PAGE ===== */
+    body.dark-mode .sheet-box {
+      background: #1e1e2e !important;
+    }
+    
+    body.dark-mode .sheet-title {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .sheet-sub {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .sheet-close {
+      background: #2d2d44 !important;
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .check-item {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .check-item:hover {
+      background: #252b3d !important;
+    }
+    
+    body.dark-mode .check-item.checked {
+      background: rgba(157, 140, 255, 0.15) !important;
+      border-color: #9d8cff !important;
+    }
+    
+    body.dark-mode .check-name {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .del-btn {
+      background: #e85c5c !important;
+    }
+    
+    body.dark-mode .del-btn:disabled {
+      background: #2d2d44 !important;
+      color: #6c7892 !important;
+    }
+    
+    body.dark-mode .cancel-link {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .device-item {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .device-item-name {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .device-item-sub {
+      color: #6c7892 !important;
+    }
+    
+    body.dark-mode .policy-text {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .policy-text strong {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .policy-meta {
+      color: #6c7892 !important;
+    }
+    
+    body.dark-mode .journal-empty {
+      color: #6c7892 !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Privacy &amp; Data 🔐</h1>
+    <p class="page-subtitle">Control your data and security preferences</p>
+
+    <!-- SECURITY -->
+    <div class="settings-section">
+      <div class="section-label">SECURITY</div>
+      <div class="toggle-row">
+        <div class="toggle-left"><span class="toggle-icon">👆</span>
+          <div><div class="toggle-name">Biometric Authentication</div>
+          <div style="font-size:0.73rem;color:var(--text3);">Use fingerprint or face to unlock</div></div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="bioToggle" onchange="savePref('biometric',this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-left"><span class="toggle-icon">🛡️</span>
+          <div><div class="toggle-name">Multi-Factor Authentication</div>
+          <div style="font-size:0.73rem;color:var(--text3);">Extra layer of security</div></div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="mfaToggle" onchange="savePref('mfa',this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="privacy-item" onclick="if(typeof showToast !== 'undefined') showToast('Password change requires server-side auth')">
+        <span class="privacy-icon">🔑</span>
+        <div class="privacy-text-wrap">
+          <div class="privacy-name">Change Password</div>
+          <div class="privacy-desc">Update your account password</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+    </div>
+
+    <!-- DATA MANAGEMENT -->
+    <div class="settings-section">
+      <div class="section-label">DATA MANAGEMENT</div>
+      <div class="privacy-item" onclick="downloadData()">
+        <span class="privacy-icon">⬇️</span>
+        <div class="privacy-text-wrap">
+          <div class="privacy-name">Download My Data</div>
+          <div class="privacy-desc">Export your data in multiple formats</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+      <div class="privacy-item" onclick="openModal('deleteModal')">
+        <span class="privacy-icon">🗑️</span>
+        <div class="privacy-text-wrap">
+          <div class="privacy-name">Selective Data Deletion</div>
+          <div class="privacy-desc">Delete specific data categories</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+      <div class="privacy-item" onclick="openModal('devicesModal')">
+        <span class="privacy-icon">📱</span>
+        <div class="privacy-text-wrap">
+          <div class="privacy-name">Manage Devices</div>
+          <div class="privacy-desc">View and remove paired devices</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+    </div>
+
+    <!-- DATA USAGE CONTROLS -->
+    <div class="settings-section">
+      <div class="section-label">DATA USAGE CONTROLS</div>
+      <div class="toggle-row">
+        <div class="toggle-left"><span class="toggle-icon">📈</span>
+          <div><div class="toggle-name">Analytics Tracking</div>
+          <div style="font-size:0.73rem;color:var(--text3);">Help improve the app with usage data</div></div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="analyticsToggle" checked onchange="savePref('analytics',this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-left"><span class="toggle-icon">🤖</span>
+          <div><div class="toggle-name">AI Prediction Usage</div>
+          <div style="font-size:0.73rem;color:var(--text3);">Allow AI to analyse your patterns</div></div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="aiToggle" onchange="savePref('ai',this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-left"><span class="toggle-icon">☁️</span>
+          <div><div class="toggle-name">Cloud Backup</div>
+          <div style="font-size:0.73rem;color:var(--text3);">Sync data across devices</div></div>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="cloudToggle" checked onchange="savePref('cloud',this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- DATA ACTIONS -->
+    <div class="settings-section">
+      <div class="section-label">DATA ACTIONS</div>
+      <div class="privacy-item" onclick="downloadData()">
+        <span class="privacy-icon">📄</span>
+        <div class="privacy-text-wrap">
+          <div class="privacy-name">Download My Data</div>
+          <div class="privacy-desc">Export as JSON, CSV, or PDF</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+      <div class="privacy-item" onclick="openModal('deleteModal')">
+        <span class="privacy-icon">✂️</span>
+        <div class="privacy-text-wrap">
+          <div class="privacy-name">Selective Data Deletion</div>
+          <div class="privacy-desc">Delete specific logs or entries</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+      <div class="privacy-item" onclick="openModal('devicesModal')">
+        <span class="privacy-icon">📶</span>
+        <div class="privacy-text-wrap">
+          <div class="privacy-name">Manage Connected Devices</div>
+          <div class="privacy-desc">2 active</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+    </div>
+
+    <!-- COMPLIANCE -->
+    <div class="settings-section">
+      <div class="section-label">COMPLIANCE &amp; LEGAL</div>
+      <div class="privacy-item" onclick="openModal('policyModal')">
+        <span class="privacy-icon">📄</span>
+        <div class="privacy-text-wrap">
+          <div class="privacy-name">Privacy Policy</div>
+          <div class="privacy-desc">GDPR &amp; Indian IT Act compliant</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+      <div class="privacy-item" onclick="openModal('termsModal')">
+        <span class="privacy-icon">📋</span>
+        <div class="privacy-text-wrap">
+          <div class="privacy-name">Terms &amp; Conditions</div>
+          <div class="privacy-desc">Last accepted: Today</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+      <div class="privacy-item" onclick="if(typeof showToast !== 'undefined') showToast('How and why we use your data')">
+        <span class="privacy-icon">❓</span>
+        <div class="privacy-text-wrap">
+          <div class="privacy-name">Data Usage Explanation</div>
+          <div class="privacy-desc">How and why we use your data</div>
+        </div>
+        <span style="color:var(--text3);">›</span>
+      </div>
+    </div>
+
+    <!-- ACCOUNT -->
+    <div class="settings-section">
+      <div class="section-label">ACCOUNT CONTROL</div>
+      <button class="btn-danger" onclick="deleteAccount()">🗑️ Delete My Account</button>
+      <div class="security-note" style="margin-top:12px;">
+        <span>🔒</span>
+        <span>Your data is protected with <strong>AES-256 encryption</strong>. All communications use end-to-end encryption.</span>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL 1: SELECTIVE DATA DELETION
+═══════════════════════════════════════ -->
+<div class="sheet-overlay hidden" id="deleteModal">
+  <div class="sheet-box">
+    <div class="sheet-header">
+      <div class="sheet-title">Selective Data Deletion</div>
+      <button class="sheet-close" onclick="closeModal('deleteModal')">✕</button>
+    </div>
+    <div class="sheet-sub">Select the categories you want to permanently delete.</div>
+
+    <div class="check-item" onclick="toggleCheck(this,'stress')" data-key="stress">
+      <div class="check-box"></div>
+      <span class="check-name">Stress Logs</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this,'mood')" data-key="mood">
+      <div class="check-box"></div>
+      <span class="check-name">Mood Entries</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this,'sleep')" data-key="sleep">
+      <div class="check-box"></div>
+      <span class="check-name">Sleep Data</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this,'analytics')" data-key="analytics">
+      <div class="check-box"></div>
+      <span class="check-name">Analytics History</span>
+    </div>
+    <div class="check-item" onclick="toggleCheck(this,'device')" data-key="device">
+      <div class="check-box"></div>
+      <span class="check-name">Device History</span>
+    </div>
+
+    <div style="height:20px;"></div>
+    <button class="del-btn" id="delSelectedBtn" onclick="deleteSelected()" disabled>
+      🗑️ Delete Selected (<span id="delCount">0</span>)
+    </button>
+    <span class="cancel-link" onclick="closeModal('deleteModal')">Cancel</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL 2: MANAGE DEVICES
+═══════════════════════════════════════ -->
+<div class="sheet-overlay hidden" id="devicesModal">
+  <div class="sheet-box">
+    <div class="sheet-header">
+      <div class="sheet-title">Manage Devices</div>
+      <button class="sheet-close" onclick="closeModal('devicesModal')">✕</button>
+    </div>
+    <div class="sheet-sub">2 active devices paired to your account.</div>
+
+    <div class="device-item" id="device-band-pro">
+      <span class="device-item-icon">📱</span>
+      <div class="device-item-info">
+        <div class="device-item-name">TRANQUIL Band Pro</div>
+        <div class="device-item-sub">Last seen: Now</div>
+      </div>
+      <button class="remove-device-btn" onclick="removeDevice('band-pro')">✕</button>
+    </div>
+    <div class="device-item" id="device-band-mini">
+      <span class="device-item-icon">📱</span>
+      <div class="device-item-info">
+        <div class="device-item-name">TRANQUIL Band Mini</div>
+        <div class="device-item-sub">Last seen: 2h ago</div>
+      </div>
+      <button class="remove-device-btn" onclick="removeDevice('band-mini')">✕</button>
+    </div>
+    <div id="noDevices" style="display:none;" class="journal-empty">
+      <span class="empty-icon">📵</span>No paired devices
+    </div>
+
+    <div style="height:16px;"></div>
+    <span class="cancel-link" onclick="closeModal('devicesModal')">Close</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL 3: PRIVACY POLICY
+═══════════════════════════════════════ -->
+<div class="sheet-overlay hidden" id="policyModal">
+  <div class="sheet-box">
+    <div class="sheet-header">
+      <div class="sheet-title">Privacy Policy</div>
+      <button class="sheet-close" onclick="closeModal('policyModal')">✕</button>
+    </div>
+    <div class="policy-meta">GDPR &amp; Indian IT Act Compliant · Last updated: March 2026</div>
+    <div class="policy-text">
+      <div class="policy-block">
+        <strong>Data Collection:</strong> TRANQUIL collects stress metrics, mood logs, sleep patterns, and device
+        usage data to provide personalized wellness insights.
+      </div>
+      <div class="policy-block">
+        <strong>Data Storage:</strong> Your data is encrypted with AES-256 and stored on the Internet Computer
+        blockchain — decentralized and censorship-resistant.
+      </div>
+      <div class="policy-block">
+        <strong>Your Rights:</strong> Under GDPR and the Indian Digital Personal Data Protection Act, you have
+        the right to access, correct, port, and erase your personal data at any time.
+      </div>
+      <div class="policy-block">
+        <strong>No Third-Party Sharing:</strong> We never sell or share your data with advertisers or third
+        parties without your explicit consent.
+      </div>
+      <div class="policy-block">
+        <strong>Data Retention:</strong> Active account data is retained while your account exists. Upon deletion,
+        all data is purged within 30 days.
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+    <span class="cancel-link" onclick="closeModal('policyModal')">Close</span>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MODAL 4: TERMS & CONDITIONS
+═══════════════════════════════════════ -->
+<div class="sheet-overlay hidden" id="termsModal">
+  <div class="sheet-box">
+    <div class="sheet-header">
+      <div class="sheet-title">Terms &amp; Conditions</div>
+      <button class="sheet-close" onclick="closeModal('termsModal')">✕</button>
+    </div>
+    <div class="policy-meta">Last accepted: Today</div>
+    <div class="policy-text">
+      <div class="policy-block">
+        <strong>1. Acceptance:</strong> By using TRANQUIL, you agree to these terms. If you disagree,
+        please discontinue use immediately.
+      </div>
+      <div class="policy-block">
+        <strong>2. Use of Service:</strong> TRANQUIL is for personal wellness monitoring. It is not a medical
+        device and does not provide medical advice or diagnosis.
+      </div>
+      <div class="policy-block">
+        <strong>3. Account Responsibility:</strong> You are responsible for maintaining the security of your
+        account credentials. Report any unauthorized access immediately.
+      </div>
+      <div class="policy-block">
+        <strong>4. Intellectual Property:</strong> All content, design, and functionality of TRANQUIL are
+        owned by the creators and protected by applicable laws.
+      </div>
+      <div class="policy-block">
+        <strong>5. Termination:</strong> We reserve the right to terminate accounts that violate these terms.
+        You may delete your account at any time via Settings.
+      </div>
+    </div>
+    <div style="height:16px;"></div>
+    <span class="cancel-link" onclick="closeModal('termsModal')">Close</span>
+  </div>
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+
+  // ── MODALS ──
+  function openModal(id){  
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.remove('hidden'); 
+  }
+  function closeModal(id){ 
+    const modal = document.getElementById(id);
+    if (modal) modal.classList.add('hidden'); 
+  }
+
+  // Close on overlay click
+  document.querySelectorAll('.sheet-overlay').forEach(el=>{
+    el.addEventListener('click', e=>{ if(e.target===el) closeModal(el.id); });
+  });
+
+  // ── CHECKBOXES ──
+  let selected = new Set();
+  function toggleCheck(el, key){
+    el.classList.toggle('checked');
+    const box = el.querySelector('.check-box');
+    if(el.classList.contains('checked')){ selected.add(key); if(box) box.textContent='✓'; }
+    else { selected.delete(key); if(box) box.textContent=''; }
+    const count = selected.size;
+    const delCount = document.getElementById('delCount');
+    const delSelectedBtn = document.getElementById('delSelectedBtn');
+    if (delCount) delCount.textContent = count;
+    if (delSelectedBtn) delSelectedBtn.disabled = count === 0;
+  }
+
+  function deleteSelected(){
+    if(!selected.size) return;
+    if(!confirm(`Permanently delete ${selected.size} category(s)? This cannot be undone.`)) return;
+    const keyMap = {
+      stress:'tranquil_stress_logs', mood:'tranquil_mood_journal',
+      sleep:'tranquil_sleep', analytics:'tranquil_stress_logs', device:'tranquil_vibration'
+    };
+    selected.forEach(k=>{ if(keyMap[k]) localStorage.removeItem(keyMap[k]); });
+    if (typeof showToast !== 'undefined') showToast(`✓ ${selected.size} category(s) deleted`);
+    selected.clear();
+    document.querySelectorAll('.check-item').forEach(el=>{
+      el.classList.remove('checked');
+      const box = el.querySelector('.check-box');
+      if (box) box.textContent='';
+    });
+    const delCount = document.getElementById('delCount');
+    const delSelectedBtn = document.getElementById('delSelectedBtn');
+    if (delCount) delCount.textContent='0';
+    if (delSelectedBtn) delSelectedBtn.disabled=true;
+    closeModal('deleteModal');
+  }
+
+  // ── DEVICES ──
+  let deviceCount = 2;
+  function removeDevice(id){
+    const el=document.getElementById('device-'+id);
+    if(!el) return;
+    el.style.transition='all 0.3s';
+    el.style.opacity='0'; 
+    el.style.transform='translateX(30px)';
+    setTimeout(()=>{ 
+      el.remove(); 
+      deviceCount--; 
+      if(deviceCount<=0) {
+        const noDevices = document.getElementById('noDevices');
+        if (noDevices) noDevices.style.display='block';
+      } 
+    },300);
+    if (typeof showToast !== 'undefined') showToast('✓ Device removed');
+  }
+
+  // ── SETTINGS SYNC ──
+  function savePref(key,val){
+    if (typeof getSettings !== 'undefined' && typeof saveSettings !== 'undefined') {
+      const s=getSettings(); 
+      s[key]=val; 
+      saveSettings(s);
+    }
+    if (typeof showToast !== 'undefined') showToast('✓ Setting saved');
+  }
+  
+  document.addEventListener('DOMContentLoaded',()=>{
+    if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+    if (typeof getSettings !== 'undefined') {
+      const s=getSettings();
+      const analyticsToggle = document.getElementById('analyticsToggle');
+      const aiToggle = document.getElementById('aiToggle');
+      const cloudToggle = document.getElementById('cloudToggle');
+      if(analyticsToggle) analyticsToggle.checked = s.analytics !== false;
+      if(aiToggle) aiToggle.checked = !!s.ai;
+      if(cloudToggle) cloudToggle.checked = s.cloud !== false;
+    }
+  });
+
+  // ── DOWNLOAD ──
+  function downloadData(){
+    const data={
+      profile: typeof getProfile !== 'undefined' ? getProfile() : {},
+      stress: typeof getStressLogs !== 'undefined' ? getStressLogs() : [],
+      mood: typeof getMoodJournal !== 'undefined' ? getMoodJournal() : [],
+      exported: new Date().toISOString()
+    };
+    const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+    const a=document.createElement('a'); 
+    a.href=URL.createObjectURL(blob);
+    a.download='tranquil-data.json'; 
+    a.click();
+    if (typeof showToast !== 'undefined') showToast('✓ Data exported!');
+  }
+
+  // ── DELETE ACCOUNT ──
+  function deleteAccount(){
+    if(!confirm('Delete your TRANQUIL account and ALL data? This cannot be undone.')) return;
+    ['tranquil_profile','tranquil_stress_logs','tranquil_mood_journal',
+     'tranquil_sleep','tranquil_vibration','tranquil_settings','tranquil_sessions']
+      .forEach(k=>localStorage.removeItem(k));
+    if (typeof showToast !== 'undefined') showToast('Account deleted. Goodbye!');
+    setTimeout(()=>window.location.href='index.html',1500);
+  }
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

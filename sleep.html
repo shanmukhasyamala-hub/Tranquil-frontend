@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – Sleep Tracking</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    .sleep-card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 20px; box-shadow: var(--shadow-sm);
+      border: 1px solid var(--border); margin-bottom: 20px;
+    }
+    .sleep-card-title { font-size: 1rem; font-weight: 800; margin-bottom: 16px; }
+
+    .time-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+    .time-col label {
+      font-size: 0.72rem; font-weight: 700; color: var(--text3);
+      display: flex; align-items: center; gap: 5px; margin-bottom: 6px;
+    }
+    .time-picker-btn {
+      width: 100%; padding: 13px 14px;
+      background: white; border-radius: var(--radius-sm);
+      border: 2px solid rgba(200,210,230,0.6);
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem; font-weight: 700; color: var(--text);
+      cursor: pointer; display: flex; align-items: center;
+      justify-content: space-between; transition: border-color 0.2s;
+    }
+    .time-picker-btn.active,
+    .time-picker-btn:hover { border-color: var(--purple); }
+
+    .duration-row {
+      background: var(--bg); border-radius: var(--radius-xs);
+      padding: 12px 16px; margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .duration-left { display: flex; align-items: center; gap: 6px; font-size: 0.88rem; font-weight: 600; color: var(--text2); }
+    .duration-val  { font-weight: 800; color: var(--purple); }
+    .dur-badge { font-size: 0.75rem; font-weight: 700; padding: 4px 10px; border-radius: 100px; }
+    .dur-optimal { background:#d4f5e5; color:#2e9460; }
+    .dur-fair    { background:#fff0d4; color:#b07020; }
+    .dur-low     { background:#fde0d6; color:#c04030; }
+
+    .quality-label { font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; color: var(--text2); }
+    .stars-row { display: flex; gap: 6px; margin-bottom: 16px; }
+    .star-btn {
+      font-size: 1.8rem; background: none; border: none; cursor: pointer;
+      transition: transform 0.15s; filter: grayscale(1) opacity(0.35);
+    }
+    .star-btn.lit { filter: none; }
+    .star-btn:hover { transform: scale(1.2); }
+
+    .history-item {
+      background: var(--card); border-radius: var(--radius-sm);
+      padding: 14px 16px; margin-bottom: 8px;
+      display: flex; align-items: center; gap: 14px;
+      border: 1px solid rgba(200,210,230,0.4);
+    }
+    .history-icon {
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--purple-bg); display: flex;
+      align-items: center; justify-content: center; font-size: 1.4rem; flex-shrink: 0;
+    }
+    .history-info { flex: 1; }
+    .history-duration { font-size: 1rem; font-weight: 800; }
+    .history-meta { font-size: 0.78rem; color: var(--text3); margin-top: 2px; }
+
+    .tips-card {
+      background: var(--purple-bg); border-radius: var(--radius-sm);
+      padding: 16px; margin-bottom: 16px;
+    }
+    .tips-title { font-size: 0.9rem; font-weight: 800; margin-bottom: 10px; }
+    .tips-list { list-style: none; }
+    .tips-list li {
+      font-size: 0.83rem; color: var(--text2); line-height: 1.5;
+      padding: 3px 0; display: flex; align-items: flex-start; gap: 8px;
+    }
+    .tips-list li::before { content:'•'; color:var(--purple); font-weight:900; }
+
+    /* ── CLOCK OVERLAY ── */
+    .clock-overlay {
+      position: fixed; inset: 0; z-index: 600;
+      background: rgba(15,18,35,0.7);
+      backdrop-filter: blur(5px);
+      display: flex; align-items: flex-end; justify-content: center;
+    }
+    .clock-overlay.hidden { display: none; }
+    .clock-sheet {
+      background: #2d3144; border-radius: 28px 28px 0 0;
+      width: 100%; max-width: var(--max-w);
+      overflow: hidden; animation: slideUp 0.3s ease;
+    }
+    .clock-display {
+      background: #3a3f5a; padding: 20px 28px 16px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .clock-time-text {
+      font-size: 3.2rem; font-weight: 800; color: white;
+      letter-spacing: 0.04em; line-height: 1;
+    }
+    .clock-ampm { display: flex; flex-direction: column; gap: 0; }
+    .ampm-btn {
+      background: none; border: none; cursor: pointer;
+      font-size: 0.9rem; font-weight: 700;
+      color: rgba(255,255,255,0.35);
+      font-family: 'Nunito', sans-serif; padding: 3px 0;
+      transition: color 0.2s;
+    }
+    .ampm-btn.on { color: white; }
+    .clock-face-area {
+      background: #1c2038; padding: 22px;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .clock-svg { width: 250px; height: 250px; cursor: pointer; }
+    .clock-mode-hint {
+      text-align: center; padding: 6px;
+      font-size: 0.75rem; color: rgba(255,255,255,0.35);
+      background: #1c2038;
+    }
+    .clock-footer {
+      background: #2d3144; padding: 12px 24px 24px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .clock-kb-btn {
+      width: 38px; height: 38px; background: rgba(255,255,255,0.08);
+      border: none; border-radius: 8px; cursor: pointer;
+      color: rgba(255,255,255,0.6); font-size: 1rem;
+    }
+    .clock-txt-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem; font-weight: 700; color: #a89de0;
+      padding: 8px;
+    }
+    .clock-set-btn {
+      background: none; border: none; cursor: pointer;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem; font-weight: 800; color: #a89de0;
+    }
+
+    /* ===== EXACT DARK MODE STYLES FOR SLEEP PAGE ===== */
+    body.dark-mode .sleep-card {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .sleep-card-title {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .time-col label {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .time-picker-btn {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .time-picker-btn:hover,
+    body.dark-mode .time-picker-btn.active {
+      border-color: #9d8cff !important;
+    }
+    
+    body.dark-mode .duration-row {
+      background: #252b3d !important;
+    }
+    
+    body.dark-mode .duration-left {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .duration-val {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .dur-optimal {
+      background: rgba(93, 201, 179, 0.2) !important;
+      color: #5dc9b3 !important;
+    }
+    
+    body.dark-mode .dur-fair {
+      background: rgba(255, 218, 110, 0.2) !important;
+      color: #ffda6e !important;
+    }
+    
+    body.dark-mode .dur-low {
+      background: rgba(232, 92, 92, 0.2) !important;
+      color: #ff7a7a !important;
+    }
+    
+    body.dark-mode .quality-label {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .star-btn {
+      color: #6c7892 !important;
+    }
+    
+    body.dark-mode .star-btn.lit {
+      color: #ffda6e !important;
+      filter: none !important;
+    }
+    
+    body.dark-mode .history-item {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .history-icon {
+      background: #252b3d !important;
+    }
+    
+    body.dark-mode .history-duration {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .history-meta {
+      color: #6c7892 !important;
+    }
+    
+    body.dark-mode .tips-card {
+      background: rgba(157, 140, 255, 0.1) !important;
+    }
+    
+    body.dark-mode .tips-title {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .tips-list li {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .tips-list li::before {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .journal-empty {
+      color: #6c7892 !important;
+    }
+    
+    body.dark-mode .pill-purple {
+      background: rgba(157, 140, 255, 0.15) !important;
+      color: #9d8cff !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Sleep Tracking 😴</h1>
+    <p class="page-subtitle">Log your sleep for better wellness insights</p>
+
+    <div class="sleep-card">
+      <div class="sleep-card-title">Log Last Night's Sleep</div>
+
+      <div class="time-row">
+        <div class="time-col">
+          <label>🌙 Bedtime</label>
+          <button class="time-picker-btn" id="bedBtn" onclick="openClock('bed')">
+            <span id="bedDisplay">22:30</span><span>▾</span>
+          </button>
+        </div>
+        <div class="time-col">
+          <label>☀️ Wake Time</label>
+          <button class="time-picker-btn" id="wakeBtn" onclick="openClock('wake')">
+            <span id="wakeDisplay">06:30</span><span>▾</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="duration-row">
+        <div class="duration-left">🕐 Sleep duration: <span class="duration-val" id="durVal">8h</span></div>
+        <span class="dur-badge dur-optimal" id="durBadge">✓ Optimal</span>
+      </div>
+
+      <div class="quality-label">Sleep Quality</div>
+      <div class="stars-row" id="starsRow">
+        <button class="star-btn lit" onclick="rateSleep(1)">★</button>
+        <button class="star-btn lit" onclick="rateSleep(2)">★</button>
+        <button class="star-btn lit" onclick="rateSleep(3)">★</button>
+        <button class="star-btn"     onclick="rateSleep(4)">★</button>
+        <button class="star-btn"     onclick="rateSleep(5)">★</button>
+      </div>
+
+      <button class="btn btn-primary btn-full" style="padding:16px;" onclick="logSleep()">
+        Log Sleep 😴
+      </button>
+    </div>
+
+    <div class="section-label">SLEEP HISTORY</div>
+    <div id="sleepHistory"></div>
+
+    <div class="tips-card">
+      <div class="tips-title">💤 Sleep Tips</div>
+      <ul class="tips-list">
+        <li>Aim for 7–9 hours of sleep per night</li>
+        <li>Keep a consistent sleep schedule</li>
+        <li>Avoid screens 1 hour before bed</li>
+        <li>Keep your room cool and dark</li>
+        <li>Try 4-7-8 breathing to fall asleep faster</li>
+      </ul>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+</div>
+
+<!-- CLOCK PICKER -->
+<div class="clock-overlay hidden" id="clockOverlay">
+  <div class="clock-sheet">
+    <div class="clock-display">
+      <div class="clock-time-text" id="clockText">10:30</div>
+      <div class="clock-ampm">
+        <button class="ampm-btn" id="amBtn" onclick="setAmpm('AM')">AM</button>
+        <button class="ampm-btn on" id="pmBtn" onclick="setAmpm('PM')">PM</button>
+      </div>
+    </div>
+    <div class="clock-face-area">
+      <svg class="clock-svg" id="clockSvg" viewBox="0 0 250 250"></svg>
+    </div>
+    <div class="clock-mode-hint" id="clockHint">Tap hour to select</div>
+    <div class="clock-footer">
+      <button class="clock-kb-btn">⌨</button>
+      <button class="clock-txt-btn" onclick="clearTime()">Clear</button>
+      <button class="clock-txt-btn" onclick="closeClock()">Cancel</button>
+      <button class="clock-set-btn" onclick="confirmTime()">Set</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+syncHeaderAvatar();
+
+// ── STATE ──
+let bedH=22, bedM=30, wakeH=6, wakeM=30;
+let rating=3;
+let target='bed';
+let cH=22, cM=30, cAmpm='PM', cMode='hour'; // clock state
+
+function pad(n){ return String(n).padStart(2,'0'); }
+
+// ── DURATION ──
+function refreshDuration(){
+  const bedTotal  = bedH*60+bedM;
+  const wakeTotal = wakeH*60+wakeM;
+  let diff = wakeTotal - bedTotal;
+  if(diff<=0) diff+=1440;
+  const h=Math.floor(diff/60), m=diff%60;
+  const durVal = document.getElementById('durVal');
+  if (durVal) durVal.textContent = m>0 ? `${h}h ${m}m` : `${h}h`;
+  const badge = document.getElementById('durBadge');
+  if (badge) {
+    if(diff>=420&&diff<=540){ badge.textContent='✓ Optimal'; badge.className='dur-badge dur-optimal'; }
+    else if(diff>=360){       badge.textContent='~ Fair';    badge.className='dur-badge dur-fair'; }
+    else{                     badge.textContent='↓ Low';     badge.className='dur-badge dur-low'; }
+  }
+}
+
+// ── STARS ──
+function rateSleep(n){
+  rating=n;
+  document.querySelectorAll('.star-btn').forEach((b,i)=>b.classList.toggle('lit',i<n));
+}
+
+// ── LOG ──
+function logSleep(){
+  const logs=JSON.parse(localStorage.getItem('tranquil_sleep')||'[]');
+  const diff=(()=>{ let d=(wakeH*60+wakeM)-(bedH*60+bedM); if(d<=0)d+=1440; return d; })();
+  logs.unshift({ bed:`${pad(bedH)}:${pad(bedM)}`, wake:`${pad(wakeH)}:${pad(wakeM)}`,
+    h:Math.floor(diff/60), m:diff%60, rating, ts:Date.now() });
+  localStorage.setItem('tranquil_sleep', JSON.stringify(logs.slice(0,30)));
+  if (typeof showToast !== 'undefined') showToast('✓ Sleep logged!');
+  renderHistory();
+}
+
+// ── HISTORY ──
+function renderHistory(){
+  const logs=JSON.parse(localStorage.getItem('tranquil_sleep')||'[]');
+  const el=document.getElementById('sleepHistory');
+  if(!el) return;
+  if(!logs.length){
+    el.innerHTML=`<div class="journal-empty"><span class="empty-icon">😴</span>No sleep logged yet</div>`;
+    return;
+  }
+  const ql=['','Poor','Poor','Fair','Good','Great'];
+  el.innerHTML=logs.map(l=>{
+    const dur = l.m>0?`${l.h}h ${l.m}m`:`${l.h}h`;
+    const date = new Date(l.ts).toLocaleDateString('en-IN',{weekday:'short',month:'short',day:'numeric'});
+    const stars = '★'.repeat(l.rating)+'☆'.repeat(5-l.rating);
+    return `<div class="history-item">
+      <div class="history-icon">😴</div>
+      <div class="history-info">
+        <div class="history-duration">${dur}</div>
+        <div class="history-meta">${date} · <span style="color:#f5c842;">${stars}</span></div>
+      </div>
+      <span class="pill pill-purple">${ql[l.rating]||'Fair'}</span>
+    </div>`;
+  }).join('');
+}
+
+// ── CLOCK OPEN ──
+function openClock(t){
+  target=t;
+  cH = t==='bed'?bedH:wakeH;
+  cM = t==='bed'?bedM:wakeM;
+  cAmpm = cH>=12?'PM':'AM';
+  cMode='hour';
+  const overlay = document.getElementById('clockOverlay');
+  if (overlay) overlay.classList.remove('hidden');
+  const bedBtn = document.getElementById('bedBtn');
+  const wakeBtn = document.getElementById('wakeBtn');
+  if (bedBtn) bedBtn.classList.toggle('active',t==='bed');
+  if (wakeBtn) wakeBtn.classList.toggle('active',t==='wake');
+  refreshClockUI();
+  drawClock();
+}
+
+function closeClock(){
+  const overlay = document.getElementById('clockOverlay');
+  if (overlay) overlay.classList.add('hidden');
+  const bedBtn = document.getElementById('bedBtn');
+  const wakeBtn = document.getElementById('wakeBtn');
+  if (bedBtn) bedBtn.classList.remove('active');
+  if (wakeBtn) wakeBtn.classList.remove('active');
+}
+
+function clearTime(){
+  cH=12; cM=0; cAmpm='AM'; cMode='hour';
+  refreshClockUI(); drawClock();
+}
+
+function setAmpm(v){
+  cAmpm=v;
+  const amBtn = document.getElementById('amBtn');
+  const pmBtn = document.getElementById('pmBtn');
+  if (amBtn) amBtn.classList.toggle('on',v==='AM');
+  if (pmBtn) pmBtn.classList.toggle('on',v==='PM');
+  refreshClockUI();
+}
+
+function refreshClockUI(){
+  const displayH = cH%12||12;
+  const clockText = document.getElementById('clockText');
+  if (clockText) clockText.textContent=`${pad(displayH)}:${pad(cM)}`;
+  const amBtn = document.getElementById('amBtn');
+  const pmBtn = document.getElementById('pmBtn');
+  if (amBtn) amBtn.classList.toggle('on',cAmpm==='AM');
+  if (pmBtn) pmBtn.classList.toggle('on',cAmpm==='PM');
+  const hint = document.getElementById('clockHint');
+  if (hint) hint.textContent = cMode==='hour' ? 'Tap to select hour' : 'Tap to select minutes';
+}
+
+function confirmTime(){
+  let h24 = cH%12;
+  if(cAmpm==='PM') h24+=12;
+  if(cAmpm==='AM'&&h24===12) h24=0;
+  if(target==='bed'){
+    bedH=h24; bedM=cM;
+    const bedDisplay = document.getElementById('bedDisplay');
+    if (bedDisplay) bedDisplay.textContent=`${pad(h24)}:${pad(cM)}`;
+  } else {
+    wakeH=h24; wakeM=cM;
+    const wakeDisplay = document.getElementById('wakeDisplay');
+    if (wakeDisplay) wakeDisplay.textContent=`${pad(h24)}:${pad(cM)}`;
+  }
+  refreshDuration();
+  closeClock();
+}
+
+// ── DRAW CLOCK ──
+function drawClock(){
+  const svg=document.getElementById('clockSvg');
+  if (!svg) return;
+  const cx=125,cy=125,r=110;
+  const nums  = cMode==='hour' ? [12,1,2,3,4,5,6,7,8,9,10,11] : [0,5,10,15,20,25,30,35,40,45,50,55];
+  const selVal = cMode==='hour' ? (cH%12||12) : Math.round(cM/5)*5;
+
+  let html=`<circle cx="${cx}" cy="${cy}" r="${r+8}" fill="#1c2038"/>`;
+
+  // tick marks
+  for(let i=0;i<60;i++){
+    const a=(i/60)*2*Math.PI-Math.PI/2;
+    const main=i%5===0;
+    const ir=main?96:104, or=main?108:111;
+    const x1=cx+ir*Math.cos(a),y1=cy+ir*Math.sin(a);
+    const x2=cx+or*Math.cos(a),y2=cy+or*Math.sin(a);
+    html+=`<line x1="${x1.toFixed(1)}" y1="${y1.toFixed(1)}" x2="${x2.toFixed(1)}" y2="${y2.toFixed(1)}"
+      stroke="rgba(255,255,255,0.1)" stroke-width="${main?2:1}"/>`;
+  }
+
+  // numbers + hand
+  const angPerNum = (2*Math.PI)/12;
+  const selIdx = nums.indexOf(selVal);
+  const handAng = selIdx>=0 ? selIdx*angPerNum - Math.PI/2 : -Math.PI/2;
+  const hx=cx+70*Math.cos(handAng), hy=cy+70*Math.sin(handAng);
+  html+=`<line x1="${cx}" y1="${cy}" x2="${hx.toFixed(1)}" y2="${hy.toFixed(1)}"
+    stroke="#a89de0" stroke-width="2.5" stroke-linecap="round"/>
+  <circle cx="${cx}" cy="${cy}" r="5" fill="#a89de0"/>`;
+
+  nums.forEach((n,i)=>{
+    const ang = i*angPerNum - Math.PI/2;
+    const nr=78;
+    const nx=cx+nr*Math.cos(ang), ny=cy+nr*Math.sin(ang);
+    const sel=n===selVal;
+    html+=`<circle cx="${nx.toFixed(1)}" cy="${ny.toFixed(1)}" r="18"
+      fill="${sel?'#a89de0':'transparent'}" style="cursor:pointer"
+      onclick="pickNum(${n})"/>
+    <text x="${nx.toFixed(1)}" y="${(ny+5).toFixed(1)}" text-anchor="middle"
+      font-size="15" font-weight="700" font-family="Nunito,sans-serif"
+      fill="${sel?'#1c2038':'rgba(255,255,255,0.85)'}"
+      style="pointer-events:none">${n}</text>`;
+  });
+
+  svg.innerHTML=html;
+}
+
+function pickNum(n){
+  if(cMode==='hour'){
+    cH=n; cMode='min';
+  } else {
+    cM=n; cMode='hour';
+  }
+  refreshClockUI(); drawClock();
+}
+
+document.addEventListener('DOMContentLoaded',()=>{ refreshDuration(); renderHistory(); });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

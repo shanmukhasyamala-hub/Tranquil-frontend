@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TRANQUIL – Login</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/dark.css">
+  <style>
+    .auth-container {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .auth-card {
+      background: var(--card);
+      border-radius: 24px;
+      padding: 32px 24px;
+      max-width: 400px;
+      width: 100%;
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow);
+    }
+    .auth-logo { text-align: center; font-size: 3rem; margin-bottom: 20px; }
+    .auth-title { font-size: 1.5rem; font-weight: 800; text-align: center; margin-bottom: 8px; }
+    .auth-subtitle { text-align: center; color: var(--text2); font-size: 0.85rem; margin-bottom: 24px; }
+    .auth-input { margin-bottom: 16px; }
+    .auth-input label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 6px; color: var(--text2); }
+    .auth-input input {
+      width: 100%; padding: 12px 16px; border-radius: 12px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--text);
+      font-family: inherit; font-size: 0.95rem;
+    }
+    .auth-input input:focus { outline: none; border-color: var(--purple); }
+    .auth-btn { width: 100%; padding: 14px; margin-top: 8px; }
+    .message {
+      padding: 10px; border-radius: 12px; font-size: 0.8rem;
+      margin-bottom: 16px; text-align: center;
+    }
+    .message-error { background: rgba(232,92,92,0.15); color: #e85c5c; }
+    .message-success { background: rgba(93,201,179,0.15); color: #5dc9b3; }
+    .mode-switch { display: flex; gap: 12px; margin-bottom: 24px; }
+    .mode-btn {
+      flex: 1; padding: 10px; text-align: center; cursor: pointer;
+      border-radius: 12px; font-weight: 700;
+      background: var(--bg); color: var(--text2);
+    }
+    .mode-btn.active { background: var(--purple); color: white; }
+    .loading { opacity: 0.6; pointer-events: none; }
+  </style>
+</head>
+<body>
+
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-logo">🧘</div>
+    <div class="auth-title">TRANQUIL</div>
+    <div class="auth-subtitle">Your personal stress relief companion</div>
+
+    <div class="mode-switch">
+      <div class="mode-btn active" id="loginModeBtn">Login</div>
+      <div class="mode-btn" id="registerModeBtn">Register</div>
+    </div>
+
+    <div id="messageDiv" style="display: none;"></div>
+
+    <!-- Login Form -->
+    <div id="loginForm">
+      <div class="auth-input">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="Enter your email">
+      </div>
+      <div class="auth-input">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter your password">
+      </div>
+      <button class="btn btn-primary auth-btn" id="loginBtn">Login →</button>
+    </div>
+
+    <!-- Register Form -->
+    <div id="registerForm" style="display: none;">
+      <div class="auth-input">
+        <label>Name</label>
+        <input type="text" id="regName" placeholder="Enter your name">
+      </div>
+      <div class="auth-input">
+        <label>Email</label>
+        <input type="email" id="regEmail" placeholder="Enter your email">
+      </div>
+      <div class="auth-input">
+        <label>Password</label>
+        <input type="password" id="regPassword" placeholder="Create a password (min 6 chars)">
+      </div>
+      <div class="auth-input">
+        <label>Confirm Password</label>
+        <input type="password" id="regConfirmPassword" placeholder="Confirm your password">
+      </div>
+      <button class="btn btn-primary auth-btn" id="registerBtn">Create Account →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const API_URL = 'http://localhost:3000/api';
+
+function showMessage(text, isError = true) {
+  const div = document.getElementById('messageDiv');
+  div.textContent = text;
+  div.className = `message ${isError ? 'message-error' : 'message-success'}`;
+  div.style.display = 'block';
+  setTimeout(() => div.style.display = 'none', 4000);
+}
+
+function setLoading(btn, isLoading) {
+  if (isLoading) {
+    btn.classList.add('loading');
+    btn.textContent = 'Please wait...';
+  } else {
+    btn.classList.remove('loading');
+    btn.textContent = btn.id === 'loginBtn' ? 'Login →' : 'Create Account →';
+  }
+}
+
+// Switch between forms
+document.getElementById('loginModeBtn').onclick = () => {
+  document.getElementById('loginModeBtn').classList.add('active');
+  document.getElementById('registerModeBtn').classList.remove('active');
+  document.getElementById('loginForm').style.display = 'block';
+  document.getElementById('registerForm').style.display = 'none';
+  document.getElementById('messageDiv').style.display = 'none';
+};
+
+document.getElementById('registerModeBtn').onclick = () => {
+  document.getElementById('loginModeBtn').classList.remove('active');
+  document.getElementById('registerModeBtn').classList.add('active');
+  document.getElementById('loginForm').style.display = 'none';
+  document.getElementById('registerForm').style.display = 'block';
+  document.getElementById('messageDiv').style.display = 'none';
+};
+
+// Login
+document.getElementById('loginBtn').onclick = async () => {
+  const email = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  const btn = document.getElementById('loginBtn');
+  
+  if (!email || !password) {
+    showMessage('Please fill in all fields');
+    return;
+  }
+  
+  setLoading(btn, true);
+  
+  try {
+    const res = await fetch(`${API_URL}/auth/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      localStorage.setItem('tranquil_token', data.token);
+      localStorage.setItem('tranquil_profile', JSON.stringify(data.user));
+      showMessage('Login successful! Redirecting...', false);
+      setTimeout(() => window.location.href = 'home.html', 1000);
+    } else {
+      showMessage(data.error || 'Login failed');
+      setLoading(btn, false);
+    }
+  } catch (err) {
+    showMessage('Cannot connect to server. Make sure backend is running on port 3000');
+    setLoading(btn, false);
+  }
+};
+
+// Register
+document.getElementById('registerBtn').onclick = async () => {
+  const name = document.getElementById('regName').value.trim();
+  const email = document.getElementById('regEmail').value.trim();
+  const password = document.getElementById('regPassword').value;
+  const confirm = document.getElementById('regConfirmPassword').value;
+  const btn = document.getElementById('registerBtn');
+  
+  if (!name || !email || !password || !confirm) {
+    showMessage('Please fill in all fields');
+    return;
+  }
+  
+  if (password !== confirm) {
+    showMessage('Passwords do not match');
+    return;
+  }
+  
+  if (password.length < 6) {
+    showMessage('Password must be at least 6 characters');
+    return;
+  }
+  
+  setLoading(btn, true);
+  
+  try {
+    const res = await fetch(`${API_URL}/auth/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password })
+    });
+    const data = await res.json();
+    
+    if (data.success) {
+      localStorage.setItem('tranquil_token', data.token);
+      localStorage.setItem('tranquil_profile', JSON.stringify(data.user));
+      showMessage('Account created! Redirecting...', false);
+      setTimeout(() => window.location.href = 'home.html', 1500);
+    } else {
+      showMessage(data.error || 'Registration failed');
+      setLoading(btn, false);
+    }
+  } catch (err) {
+    showMessage('Cannot connect to server. Make sure backend is running on port 3000');
+    setLoading(btn, false);
+  }
+};
+
+// If already logged in, go to home
+if (localStorage.getItem('tranquil_token')) {
+  window.location.href = 'home.html';
+}
+</script>
+
+</body>
+</html>

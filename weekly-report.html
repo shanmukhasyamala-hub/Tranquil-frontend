@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRANQUIL – Weekly Report</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    /* Additional dark mode styles for weekly report - matching reference images */
+    body.dark-mode .report-header {
+      background: linear-gradient(135deg, #6a5acd, #9d8cff) !important;
+    }
+    
+    body.dark-mode .report-section {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .report-section h3 {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .report-section p {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .insight-badge {
+      background: rgba(157, 140, 255, 0.15) !important;
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .badge-positive {
+      background: rgba(93, 201, 179, 0.15) !important;
+      color: #5dc9b3 !important;
+    }
+    
+    body.dark-mode .badge-warning {
+      background: rgba(255, 218, 110, 0.15) !important;
+      color: #ffda6e !important;
+    }
+    
+    body.dark-mode .badge-negative {
+      background: rgba(232, 92, 92, 0.15) !important;
+      color: #ff7a7a !important;
+    }
+    
+    body.dark-mode .weekly-breakdown-item {
+      border-bottom-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .weekly-day {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .weekly-score {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .progress-bg {
+      background: #2d2d44 !important;
+    }
+    
+    body.dark-mode .recommendation-item {
+      color: #a8b3cf !important;
+      border-bottom-color: #2d2d44 !important;
+    }
+    
+    .weekly-breakdown-item {
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--bg2);
+    }
+    
+    .weekly-breakdown-item:last-child {
+      border-bottom: none;
+    }
+    
+    .weekly-day {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    .weekly-score {
+      font-weight: 700;
+    }
+    
+    .progress-bg {
+      background: var(--bg2);
+      border-radius: 100px;
+      height: 8px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    
+    .progress-fill-custom {
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.3s ease;
+    }
+    
+    .recommendation-item {
+      padding: 10px 0;
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--bg2);
+    }
+    
+    .recommendation-item:last-child {
+      border-bottom: none;
+    }
+    
+    .rec-icon {
+      font-size: 1.2rem;
+      min-width: 28px;
+    }
+    
+    .rec-text {
+      flex: 1;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Weekly Report 📊</h1>
+    <p class="page-subtitle">Your wellness summary</p>
+
+    <!-- Stats Overview -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">AVG SCORE</div>
+        <div class="stat-value" id="avgScoreDisplay">--</div>
+        <div class="stat-sub">This week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">TOTAL LOGS</div>
+        <div class="stat-value" id="totalLogsDisplay">0</div>
+        <div class="stat-sub">Stress readings</div>
+      </div>
+    </div>
+
+    <!-- Trend Card -->
+    <div class="report-section" style="text-align: center;">
+      <div class="insight-badge" id="trendBadgeDisplay">📊 Loading...</div>
+      <div style="font-size: 1.8rem; font-weight: 800; margin: 12px 0;" id="trendValue">--</div>
+      <p id="trendMessage" style="font-size: 0.85rem;">Analyzing your data...</p>
+    </div>
+
+    <!-- Weekly Breakdown -->
+    <div class="report-section">
+      <h3 style="margin-bottom: 16px;">📊 Weekly Breakdown</h3>
+      <div id="weeklyBreakdownList"></div>
+    </div>
+
+    <!-- AI Insights -->
+    <div class="report-section">
+      <h3 style="margin-bottom: 16px;">🤖 AI Insights</h3>
+      <div id="aiInsights">
+        <p style="color: var(--text2);">Loading insights...</p>
+      </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="report-section">
+      <h3 style="margin-bottom: 16px;">🎯 Personalized Recommendations</h3>
+      <div id="recommendationsList"></div>
+    </div>
+
+    <!-- Export Button -->
+    <button class="btn btn-primary btn-full" onclick="exportFullReport()" style="margin-bottom: 20px;">
+      📄 Export Full Report
+    </button>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+// Main function to generate weekly report
+function generateWeeklyReport() {
+  const stressLogs = getStressLogs();
+  const weeklyData = getWeeklyStats();
+  
+  // Calculate average score
+  const validScores = weeklyData.filter(w => w.score > 0);
+  const avgScore = validScores.length ? Math.round(validScores.reduce((s, w) => s + w.score, 0) / validScores.length) : 0;
+  
+  // Display average score
+  const avgDisplay = document.getElementById('avgScoreDisplay');
+  if (avgDisplay) avgDisplay.textContent = avgScore || '--';
+  
+  // Display total logs
+  const totalLogsDisplay = document.getElementById('totalLogsDisplay');
+  if (totalLogsDisplay) totalLogsDisplay.textContent = stressLogs.length;
+  
+  // Calculate trend
+  let trend = 'stable';
+  let trendPercent = 0;
+  
+  if (weeklyData.length >= 2) {
+    const firstHalf = weeklyData.slice(0, 3).filter(w => w.score > 0);
+    const secondHalf = weeklyData.slice(3, 7).filter(w => w.score > 0);
+    
+    if (firstHalf.length && secondHalf.length) {
+      const firstAvg = firstHalf.reduce((s, w) => s + w.score, 0) / firstHalf.length;
+      const secondAvg = secondHalf.reduce((s, w) => s + w.score, 0) / secondHalf.length;
+      trendPercent = Math.round(((secondAvg - firstAvg) / firstAvg) * 100);
+      
+      if (secondAvg < firstAvg - 3) trend = 'down';
+      else if (secondAvg > firstAvg + 3) trend = 'up';
+      else trend = 'stable';
+    }
+  }
+  
+  // Update trend display
+  const trendBadge = document.getElementById('trendBadgeDisplay');
+  const trendValue = document.getElementById('trendValue');
+  const trendMessage = document.getElementById('trendMessage');
+  
+  if (trend === 'down') {
+    if (trendBadge) {
+      trendBadge.textContent = '📉 Stress Decreasing';
+      trendBadge.className = 'insight-badge badge-positive';
+    }
+    if (trendValue) {
+      trendValue.textContent = `↓ ${Math.abs(trendPercent)}%`;
+      trendValue.style.color = '#5bbf8a';
+    }
+    if (trendMessage) {
+      trendMessage.textContent = 'Your stress levels are going down! Keep up the great work!';
+    }
+  } else if (trend === 'up') {
+    if (trendBadge) {
+      trendBadge.textContent = '📈 Stress Increasing';
+      trendBadge.className = 'insight-badge badge-negative';
+    }
+    if (trendValue) {
+      trendValue.textContent = `↑ ${trendPercent}%`;
+      trendValue.style.color = '#e85c5c';
+    }
+    if (trendMessage) {
+      trendMessage.textContent = 'Your stress has increased. Try adding more breaks to your routine.';
+    }
+  } else {
+    if (trendBadge) {
+      trendBadge.textContent = '📊 Stable Week';
+      trendBadge.className = 'insight-badge badge-warning';
+    }
+    if (trendValue) {
+      trendValue.textContent = '→ Stable';
+      trendValue.style.color = '#f5c842';
+    }
+    if (trendMessage) {
+      trendMessage.textContent = 'Your stress levels remained stable. Consistency is key!';
+    }
+  }
+  
+  // Weekly breakdown
+  const breakdownContainer = document.getElementById('weeklyBreakdownList');
+  if (breakdownContainer) {
+    breakdownContainer.innerHTML = weeklyData.map(day => {
+      const score = day.score;
+      const color = score < 30 ? '#5bbf8a' : score < 60 ? '#7c6fcd' : '#e85c5c';
+      const percentage = score ? Math.min(100, Math.round((score / 100) * 100)) : 0;
+      
+      return `
+        <div class="weekly-breakdown-item">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+            <span class="weekly-day">${day.day}</span>
+            <span class="weekly-score" style="color: ${color};">${score || 'No data'}</span>
+          </div>
+          <div class="progress-bg">
+            <div class="progress-fill-custom" style="width: ${percentage}%; background: ${color};"></div>
+          </div>
+          ${score ? `<div style="font-size: 0.7rem; color: var(--text3); margin-top: 4px;">${score}/100</div>` : ''}
+        </div>
+      `;
+    }).join('');
+  }
+  
+  // AI Insights
+  const insightsContainer = document.getElementById('aiInsights');
+  if (insightsContainer) {
+    let insightText = '';
+    
+    if (avgScore > 70) {
+      insightText = '⚠️ Your stress levels are high this week. Consider incorporating more relaxation techniques like deep breathing and meditation into your daily routine.';
+    } else if (avgScore > 50) {
+      insightText = '📊 Your stress is moderate. Small breaks throughout the day can help maintain this balance and prevent spikes.';
+    } else if (avgScore > 30) {
+      insightText = '😊 Your stress is well-managed! Continue your current wellness habits to maintain this healthy level.';
+    } else {
+      insightText = '🌟 Excellent stress management! You\'re doing great. Keep tracking to maintain these low levels.';
+    }
+    
+    // Add sleep correlation insight
+    const sleepData = JSON.parse(localStorage.getItem('tranquil_sleep') || '[]');
+    if (sleepData.length > 3) {
+      insightText += ' Good sleep habits correlate with lower stress. Keep prioritizing your rest!';
+    }
+    
+    insightsContainer.innerHTML = `<p style="line-height: 1.6; color: var(--text2);">${insightText}</p>`;
+  }
+  
+  // Recommendations
+  const recommendationsContainer = document.getElementById('recommendationsList');
+  if (recommendationsContainer) {
+    const recommendations = [
+      { icon: '🧘', text: 'Try the 4-7-8 breathing technique when you feel stressed' },
+      { icon: '💧', text: 'Drink water regularly - dehydration can increase stress' },
+      { icon: '😴', text: 'Maintain a consistent sleep schedule for better recovery' },
+      { icon: '📔', text: 'Journal your thoughts to process emotions effectively' },
+      { icon: '🎵', text: 'Listen to calming sounds before bed for better sleep' },
+      { icon: '🚶', text: 'Take short walking breaks during work hours' }
+    ];
+    
+    // Show 3 random recommendations
+    const shuffled = recommendations.sort(() => 0.5 - Math.random()).slice(0, 3);
+    
+    recommendationsContainer.innerHTML = shuffled.map(rec => `
+      <div class="recommendation-item">
+        <div class="rec-icon">${rec.icon}</div>
+        <div class="rec-text">${rec.text}</div>
+      </div>
+    `).join('');
+  }
+}
+
+// Export full report
+function exportFullReport() {
+  const profile = getProfile();
+  const weeklyData = getWeeklyStats();
+  const stressLogs = getStressLogs();
+  const moodEntries = getMoodJournal();
+  
+  const avgScore = weeklyData.filter(w => w.score > 0).reduce((s, w) => s + w.score, 0) / weeklyData.filter(w => w.score > 0).length;
+  
+  const report = `
+╔══════════════════════════════════════════════════════════════╗
+║                    TRANQUIL WEEKLY REPORT                    ║
+╚══════════════════════════════════════════════════════════════╝
+
+Generated: ${new Date().toLocaleString()}
+User: ${profile.name}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📊 SUMMARY STATISTICS
+────────────────────────────────────────────────────────────────
+• Average Stress Score: ${Math.round(avgScore) || '--'}
+• Total Stress Logs: ${stressLogs.length}
+• Total Mood Entries: ${moodEntries.length}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📈 WEEKLY BREAKDOWN
+────────────────────────────────────────────────────────────────
+${weeklyData.map(w => `${w.day.padEnd(8)}: ${w.score || 'No data'}`).join('\n')}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 RECOMMENDATIONS
+────────────────────────────────────────────────────────────────
+• Practice daily breathing exercises
+• Track your mood consistently
+• Aim for 7-8 hours of sleep
+• Stay hydrated throughout the day
+• Take regular breaks from screens
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Stay calm and carry on! 🧘
+
+Report generated by TRANQUIL Wellness App
+  `;
+  
+  const blob = new Blob([report], { type: 'text/plain' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `tranquil-report-${new Date().toISOString().slice(0, 10)}.txt`;
+  a.click();
+  URL.revokeObjectURL(url);
+  
+  if (typeof showToast !== 'undefined') {
+    showToast('📄 Report exported successfully!');
+  }
+}
+
+// Initialize page
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+  generateWeeklyReport();
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

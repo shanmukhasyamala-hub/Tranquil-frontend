@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – Meditation</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    .meditation-circle {
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--purple-bg), var(--purple-light));
+      margin: 20px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 8px 30px rgba(124,111,205,0.3);
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .meditation-circle.active {
+      animation: pulseGlow 4s ease-in-out infinite;
+    }
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); box-shadow: 0 8px 30px rgba(124,111,205,0.3); }
+      50% { transform: scale(1.05); box-shadow: 0 15px 45px rgba(124,111,205,0.5); }
+    }
+    .meditation-time {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.8rem;
+      font-weight: 800;
+      color: var(--purple);
+      line-height: 1;
+    }
+    .meditation-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text2);
+      margin-top: 8px;
+    }
+    .meditation-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 20px;
+    }
+    .med-stat-card {
+      background: var(--card);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .med-stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--purple);
+    }
+    .med-stat-label {
+      font-size: 0.7rem;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Guided Meditation 🧘</h1>
+    <p class="page-subtitle">Find peace with guided sessions</p>
+
+    <div class="card card-pad" style="margin-bottom:20px; text-align:center;">
+      <div class="meditation-circle" id="meditationCircle">
+        <div class="meditation-time" id="meditationTime">05:00</div>
+        <div class="meditation-label" id="meditationLabel">Ready</div>
+      </div>
+      
+      <div style="display:flex; gap:12px; justify-content:center; margin-top:20px; flex-wrap:wrap;">
+        <button class="btn btn-primary" id="startBtn" onclick="startMeditation()">▶ Start</button>
+        <button class="btn btn-ghost" id="pauseBtn" onclick="pauseMeditation()" disabled>⏸ Pause</button>
+        <button class="btn btn-ghost" id="resetBtn" onclick="resetMeditation()" disabled>🔄 Reset</button>
+      </div>
+    </div>
+
+    <div class="section-label">QUICK SESSIONS</div>
+    <div class="quick-grid">
+      <div class="quick-card" onclick="setDuration(300, 'Mindfulness')">
+        <span class="quick-icon">🧠</span>
+        <span class="quick-name">Mindfulness<br><small>5 min</small></span>
+      </div>
+      <div class="quick-card" onclick="setDuration(600, 'Deep Relaxation')">
+        <span class="quick-icon">😌</span>
+        <span class="quick-name">Deep Relax<br><small>10 min</small></span>
+      </div>
+      <div class="quick-card" onclick="setDuration(900, 'Sleep Journey')">
+        <span class="quick-icon">😴</span>
+        <span class="quick-name">Sleep Journey<br><small>15 min</small></span>
+      </div>
+      <div class="quick-card" onclick="setDuration(1200, 'Stress Relief')">
+        <span class="quick-icon">🌊</span>
+        <span class="quick-name">Stress Relief<br><small>20 min</small></span>
+      </div>
+    </div>
+
+    <div class="meditation-stats">
+      <div class="med-stat-card">
+        <div class="med-stat-value" id="totalSessions">0</div>
+        <div class="med-stat-label">Total Sessions</div>
+      </div>
+      <div class="med-stat-card">
+        <div class="med-stat-value" id="totalMinutes">0</div>
+        <div class="med-stat-label">Minutes Mindful</div>
+      </div>
+    </div>
+
+    <div class="daily-insight" style="margin-top:16px;">
+      <strong>🧘 Today's Insight</strong>
+      <p id="meditationTip" style="margin-top:6px;">Even 5 minutes of mindfulness can reduce stress levels significantly.</p>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+// Meditation Module
+let meditationInterval = null;
+let timeLeft = 300;
+let isActive = false;
+let isPaused = false;
+let currentStyle = 'Mindfulness';
+
+function getMeditationData() {
+  return JSON.parse(localStorage.getItem('tranquil_meditation') || '{"sessions":0, "minutes":0}');
+}
+
+function saveMeditationData(data) {
+  localStorage.setItem('tranquil_meditation', JSON.stringify(data));
+}
+
+function updateDisplay() {
+  const mins = Math.floor(timeLeft / 60);
+  const secs = timeLeft % 60;
+  const timeEl = document.getElementById('meditationTime');
+  if (timeEl) {
+    timeEl.textContent = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+  }
+  
+  const circle = document.getElementById('meditationCircle');
+  const labelEl = document.getElementById('meditationLabel');
+  
+  if (circle) {
+    if (isActive && !isPaused) {
+      circle.classList.add('active');
+      if (labelEl) labelEl.textContent = currentStyle;
+    } else if (isPaused) {
+      circle.classList.remove('active');
+      if (labelEl) labelEl.textContent = 'Paused';
+    } else {
+      circle.classList.remove('active');
+      if (labelEl) labelEl.textContent = 'Ready';
+    }
+  }
+}
+
+function setDuration(seconds, style) {
+  if (isActive) {
+    if (typeof showToast !== 'undefined') showToast('Please finish current session first');
+    return;
+  }
+  timeLeft = seconds;
+  currentStyle = style;
+  updateDisplay();
+  const resetBtn = document.getElementById('resetBtn');
+  if (resetBtn) resetBtn.disabled = false;
+  if (typeof showToast !== 'undefined') showToast(`${style} - ${Math.floor(seconds/60)} minutes`);
+}
+
+function startMeditation() {
+  if (isActive) return;
+  
+  isActive = true;
+  isPaused = false;
+  
+  const startBtn = document.getElementById('startBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  
+  if (startBtn) startBtn.disabled = true;
+  if (pauseBtn) pauseBtn.disabled = false;
+  if (resetBtn) resetBtn.disabled = false;
+  
+  playBell();
+  
+  meditationInterval = setInterval(() => {
+    if (!isPaused && timeLeft > 0) {
+      timeLeft--;
+      updateDisplay();
+      
+      if (timeLeft === 0) {
+        completeMeditation();
+      }
+    }
+  }, 1000);
+}
+
+function pauseMeditation() {
+  if (!isActive) return;
+  isPaused = !isPaused;
+  const pauseBtn = document.getElementById('pauseBtn');
+  if (pauseBtn) pauseBtn.textContent = isPaused ? '▶ Resume' : '⏸ Pause';
+  updateDisplay();
+}
+
+function resetMeditation() {
+  if (meditationInterval) {
+    clearInterval(meditationInterval);
+    meditationInterval = null;
+  }
+  isActive = false;
+  isPaused = false;
+  timeLeft = 300;
+  currentStyle = 'Mindfulness';
+  
+  const startBtn = document.getElementById('startBtn');
+  const pauseBtn = document.getElementById('pauseBtn');
+  const resetBtn = document.getElementById('resetBtn');
+  
+  if (startBtn) startBtn.disabled = false;
+  if (pauseBtn) {
+    pauseBtn.disabled = true;
+    pauseBtn.textContent = '⏸ Pause';
+  }
+  if (resetBtn) resetBtn.disabled = true;
+  
+  updateDisplay();
+  if (typeof showToast !== 'undefined') showToast('Session reset');
+}
+
+function completeMeditation() {
+  if (meditationInterval) {
+    clearInterval(meditationInterval);
+    meditationInterval = null;
+  }
+  
+  const sessionMinutes = Math.floor((300 - timeLeft) / 60);
+  if (sessionMinutes > 0) {
+    const data = getMeditationData();
+    data.sessions++;
+    data.minutes += sessionMinutes;
+    saveMeditationData(data);
+    
+    const totalSessions = document.getElementById('totalSessions');
+    const totalMinutes = document.getElementById('totalMinutes');
+    if (totalSessions) totalSessions.textContent = data.sessions;
+    if (totalMinutes) totalMinutes.textContent = data.minutes;
+    
+    playBell();
+    if (typeof showToast !== 'undefined') showToast(`✨ Complete! +${sessionMinutes} mindful minutes`);
+    
+    if (typeof getLatestStress !== 'undefined' && typeof addStressLog !== 'undefined') {
+      const stress = getLatestStress();
+      if (stress && stress.score > 20) {
+        addStressLog(Math.max(10, stress.score - 10));
+      }
+    }
+  }
+  
+  resetMeditation();
+}
+
+function playBell() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.frequency.value = 880;
+    gain.gain.value = 0.2;
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 2);
+    osc.stop(audioCtx.currentTime + 2);
+  } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+  const data = getMeditationData();
+  const totalSessions = document.getElementById('totalSessions');
+  const totalMinutes = document.getElementById('totalMinutes');
+  if (totalSessions) totalSessions.textContent = data.sessions;
+  if (totalMinutes) totalMinutes.textContent = data.minutes;
+  updateDisplay();
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

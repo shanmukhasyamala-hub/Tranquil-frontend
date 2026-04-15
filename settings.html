@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRANQUIL – Settings</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+</head>
+<body>
+
+<div class="app-wrapper">
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn active" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <h1 class="page-title">Settings ⚙️</h1>
+    <p class="page-subtitle">Customize your TRANQUIL experience</p>
+
+    <!-- APPEARANCE -->
+    <div class="settings-section">
+      <div class="section-label">APPEARANCE</div>
+      <div class="toggle-row">
+        <div class="toggle-left">
+          <span class="toggle-icon" id="darkModeIcon">🌙</span>
+          <span class="toggle-name">Dark Mode</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="darkModeToggle"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- SMART REMINDERS -->
+    <div class="settings-section">
+      <div class="section-label">SMART REMINDERS</div>
+      <div class="toggle-row">
+        <div class="toggle-left">
+          <span class="toggle-icon">💧</span>
+          <span class="toggle-name">Hydration Reminder</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="hydrationToggle" checked onchange="handleSetting('hydration',this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-left">
+          <span class="toggle-icon">☕</span>
+          <span class="toggle-name">Take a Break</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="breakToggle" checked onchange="handleSetting('breakReminder',this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+      <div class="toggle-row">
+        <div class="toggle-left">
+          <span class="toggle-icon">🧘</span>
+          <span class="toggle-name">Stretch Reminder</span>
+        </div>
+        <label class="toggle-switch">
+          <input type="checkbox" id="stretchToggle" checked onchange="handleSetting('stretchReminder',this.checked)"/>
+          <span class="toggle-slider"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- DATA & PRIVACY -->
+    <div class="settings-section">
+      <div class="section-label">DATA &amp; PRIVACY</div>
+      <div class="card card-pad">
+        <p style="font-size:0.83rem;color:var(--text2);line-height:1.6;margin-bottom:14px;">
+          Your data is stored securely in your browser's local storage. Export a copy at any time.
+        </p>
+        <button class="btn btn-ghost btn-full" onclick="exportData()">
+          ⬇ Export My Data (JSON)
+        </button>
+        <div style="margin-top:10px;">
+          <a href="privacy.html" class="btn btn-ghost btn-full" style="display:flex;justify-content:center;">
+            🔒 Privacy &amp; Data Settings
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <div class="settings-section">
+      <div class="section-label">ABOUT</div>
+      <div class="card card-pad">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:14px;">
+          <div style="width:52px;height:52px;border-radius:14px;background:var(--purple-bg);
+            display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;">🧘</div>
+          <div>
+            <div style="font-size:1rem;font-weight:800;">TRANQUIL</div>
+            <div style="font-size:0.78rem;color:var(--text3);">Version 1.0.0</div>
+          </div>
+        </div>
+        <p style="font-size:0.83rem;color:var(--text2);line-height:1.6;margin-bottom:14px;">
+          TRANQUIL is your personal stress relief companion designed for students,
+          working professionals, and anyone dealing with daily stress.
+        </p>
+      </div>
+    </div>
+
+    <p style="text-align:center;font-size:0.75rem;color:var(--text3);margin-top:8px;">
+      © 2026 TRANQUIL · Built by Shanmukha
+    </p>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html">🏠 Home</a>
+    <a class="nav-item" href="breathe.html">🌬️ Breathe</a>
+    <a class="nav-item" href="sounds.html">🎵 Sounds</a>
+    <a class="nav-item" href="journal.html">📔 Journal</a>
+    <a class="nav-item" href="analytics.html">📊 Analytics</a>
+    <a class="nav-item" href="menu-hub.html">🌟 Hub</a>
+  </nav>
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+    const s = typeof getSettings !== 'undefined' ? getSettings() : {};
+    const hydrationToggle = document.getElementById('hydrationToggle');
+    const breakToggle = document.getElementById('breakToggle');
+    const stretchToggle = document.getElementById('stretchToggle');
+    if (hydrationToggle) hydrationToggle.checked = s.hydration !== false;
+    if (breakToggle) breakToggle.checked = s.breakReminder !== false;
+    if (stretchToggle) stretchToggle.checked = s.stretchReminder !== false;
+  });
+
+  function handleSetting(key, value) {
+    if (typeof getSettings !== 'undefined' && typeof saveSettings !== 'undefined') {
+      const s = getSettings();
+      s[key] = value;
+      saveSettings(s);
+    }
+    if (typeof showToast !== 'undefined') showToast('✓ Setting saved');
+  }
+
+  function exportData() {
+    const data = {
+      profile: typeof getProfile !== 'undefined' ? getProfile() : {},
+      stress: typeof getStressLogs !== 'undefined' ? getStressLogs() : [],
+      mood: typeof getMoodJournal !== 'undefined' ? getMoodJournal() : [],
+      exported: new Date().toISOString(),
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'tranquil-data.json';
+    a.click();
+    URL.revokeObjectURL(url);
+    if (typeof showToast !== 'undefined') showToast('✓ Data exported!');
+  }
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>
