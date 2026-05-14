@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – Breathe</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    .technique-card {
+      background: var(--card); border-radius: var(--radius);
+      padding: 20px; margin-bottom: 12px;
+      box-shadow: var(--shadow-sm); border: 1px solid var(--border);
+      cursor: pointer; transition: all 0.25s;
+      display: flex; gap: 16px; align-items: center;
+    }
+    .technique-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--purple-light); }
+    .technique-card.active { border-color: var(--purple); background: var(--purple-bg); }
+    .tech-icon {
+      width: 54px; height: 54px; border-radius: 50%;
+      background: var(--bg); display: flex; align-items: center;
+      justify-content: center; font-size: 1.6rem; flex-shrink: 0;
+    }
+    .technique-card.active .tech-icon { background: white; }
+    .tech-name { font-size: 1rem; font-weight: 800; margin-bottom: 3px; }
+    .tech-desc { font-size: 0.8rem; color: var(--text2); margin-bottom: 8px; }
+    .tech-tags { display: flex; gap: 6px; flex-wrap: wrap; }
+    .tech-tag {
+      background: var(--purple-bg); color: var(--purple);
+      font-size: 0.7rem; font-weight: 700;
+      padding: 3px 9px; border-radius: 100px;
+    }
+    .technique-card.active .tech-tag { background: white; }
+
+    .session-overlay {
+      position: fixed; inset: 0; z-index: 500;
+      background: rgba(26,32,53,0.5);
+      backdrop-filter: blur(6px);
+      display: flex; align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .session-overlay.hidden { display: none; }
+    .session-card {
+      background: white; border-radius: 28px;
+      padding: 32px 24px; width: 100%; max-width: 360px;
+      text-align: center; animation: popIn 0.3s ease;
+    }
+    .session-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 4px; }
+    .session-sub   { font-size: 0.85rem; color: var(--text2); margin-bottom: 28px; }
+    .phase-label {
+      font-size: 1rem; font-weight: 800; color: var(--purple);
+      letter-spacing: 0.05em; text-transform: uppercase;
+      margin-bottom: 6px; min-height: 1.4em;
+    }
+    .phase-timer {
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem; font-weight: 600; color: var(--purple);
+      line-height: 1; margin-bottom: 24px;
+    }
+    .rounds-left { font-size: 0.8rem; color: var(--text3); margin-top: 12px; font-weight: 600; }
+  </style>
+</head>
+<body>
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <h1 class="page-title">Breathe 🌬️</h1>
+    <p class="page-subtitle">Choose a technique and find your calm</p>
+
+    <div id="techniqueList">
+      <div class="technique-card" onclick="startSession('478')" data-id="478">
+        <div class="tech-icon">🌙</div>
+        <div>
+          <div class="tech-name">4-7-8 Breathing</div>
+          <div class="tech-desc">Inhale 4s, hold 7s, exhale 8s. Reduces anxiety fast.</div>
+          <div class="tech-tags">
+            <span class="tech-tag">In: 4s</span>
+            <span class="tech-tag">Hold: 7s</span>
+            <span class="tech-tag">Out: 8s</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="technique-card" onclick="startSession('box')" data-id="box">
+        <div class="tech-icon">⬜</div>
+        <div>
+          <div class="tech-name">Box Breathing</div>
+          <div class="tech-desc">Equal 4s phases. Used by Navy SEALs for calm focus.</div>
+          <div class="tech-tags">
+            <span class="tech-tag">In: 4s</span>
+            <span class="tech-tag">Hold: 4s</span>
+            <span class="tech-tag">Out: 4s</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="technique-card" onclick="startSession('deep')" data-id="deep">
+        <div class="tech-icon">🌊</div>
+        <div>
+          <div class="tech-name">Deep Calm</div>
+          <div class="tech-desc">Slow 5s inhale, 5s exhale. Perfect for relaxation.</div>
+          <div class="tech-tags">
+            <span class="tech-tag">In: 5s</span>
+            <span class="tech-tag">Out: 5s</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px;background:var(--purple-bg);border-radius:var(--radius-sm);padding:14px 16px;">
+      <p style="font-size:0.83rem;color:var(--text2);line-height:1.6;">
+        💡 <strong>Tip:</strong> Combine breathing exercises with calm sounds for maximum relaxation.
+      </p>
+    </div>
+  </main>
+
+  <div class="session-overlay hidden" id="sessionOverlay">
+    <div class="session-card">
+      <div class="session-title" id="sessionName">4-7-8 Breathing</div>
+      <div class="session-sub" id="sessionDesc">Focus on your breath</div>
+
+      <div class="breath-circle-wrap" style="padding:16px 0;">
+        <div class="breath-outer">
+          <div class="breath-inner" id="breathCircle">
+            <div class="phase-label" id="phaseLabel">INHALE</div>
+            <div class="phase-timer" id="phaseTimer">4</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rounds-left" id="roundsLeft">Round 1 of 4</div>
+
+      <div style="display:flex;gap:10px;margin-top:20px;">
+        <button class="btn btn-ghost" style="flex:1;" onclick="stopSession()">Stop</button>
+        <button class="btn btn-primary" style="flex:2;" id="pauseBtn" onclick="togglePause()">Pause</button>
+      </div>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item active" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+<div class="toast" id="globalToast"></div>
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+<script>
+  syncHeaderAvatar();
+
+  const TECHNIQUES = {
+    '478': { name: '4-7-8 Breathing', desc: 'Reduces anxiety fast', phases: [['INHALE',4],['HOLD',7],['EXHALE',8]], rounds:4 },
+    'box': { name: 'Box Breathing',   desc: 'Calm, focused mind',   phases: [['INHALE',4],['HOLD',4],['EXHALE',4],['HOLD',4]], rounds:4 },
+    'deep':{ name: 'Deep Calm',       desc: 'Deep relaxation',      phases: [['INHALE',5],['EXHALE',5]], rounds:5 },
+  };
+
+  let sessionTimer = null, currentPhase = 0, currentRound = 1, timeLeft = 0;
+  let isPaused = false, activeTechnique = null;
+
+  function startSession(id) {
+    activeTechnique = TECHNIQUES[id];
+    currentPhase = 0; currentRound = 1; isPaused = false;
+    document.getElementById('sessionName').textContent = activeTechnique.name;
+    document.getElementById('sessionDesc').textContent = activeTechnique.desc;
+    document.getElementById('sessionOverlay').classList.remove('hidden');
+    runPhase();
+  }
+
+  function runPhase() {
+    if (!activeTechnique) return;
+    const [phaseName, duration] = activeTechnique.phases[currentPhase];
+    timeLeft = duration;
+    document.getElementById('phaseLabel').textContent = phaseName;
+    document.getElementById('phaseTimer').textContent = timeLeft;
+    document.getElementById('roundsLeft').textContent = `Round ${currentRound} of ${activeTechnique.rounds}`;
+    const circle = document.getElementById('breathCircle');
+    if (phaseName === 'INHALE') {
+      circle.style.transform = 'scale(1.15)';
+      circle.style.boxShadow = '0 12px 40px rgba(124,111,205,0.45)';
+    } else if (phaseName === 'EXHALE') {
+      circle.style.transform = 'scale(0.88)';
+      circle.style.boxShadow = '0 4px 16px rgba(124,111,205,0.2)';
+    } else {
+      circle.style.transform = 'scale(1.0)';
+    }
+    if (sessionTimer) clearInterval(sessionTimer);
+    sessionTimer = setInterval(() => {
+      if (isPaused) return;
+      timeLeft--;
+      document.getElementById('phaseTimer').textContent = timeLeft;
+      if (timeLeft <= 0) {
+        clearInterval(sessionTimer);
+        nextPhase();
+      }
+    }, 1000);
+  }
+
+  function nextPhase() {
+    currentPhase++;
+    if (currentPhase >= activeTechnique.phases.length) {
+      currentPhase = 0; currentRound++;
+      if (currentRound > activeTechnique.rounds) {
+        sessionComplete(); return;
+      }
+    }
+    runPhase();
+  }
+
+  function sessionComplete() {
+    incBreathingSession();
+    showToast('✨ Session complete! Great work, ' + getProfile().name + '!');
+    stopSession();
+  }
+
+  function stopSession() {
+    if (sessionTimer) clearInterval(sessionTimer);
+    document.getElementById('sessionOverlay').classList.add('hidden');
+    document.getElementById('breathCircle').style.transform = '';
+    activeTechnique = null;
+  }
+
+  function togglePause() {
+    isPaused = !isPaused;
+    document.getElementById('pauseBtn').textContent = isPaused ? 'Resume' : 'Pause';
+  }
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRANQUIL – Weather & Mood</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    .weather-card {
+      background: linear-gradient(135deg, var(--purple-bg), var(--card));
+      border-radius: var(--radius);
+      padding: 24px;
+      text-align: center;
+      margin-bottom: 20px;
+      border: 1px solid var(--border);
+    }
+    .weather-temp {
+      font-size: 3rem;
+      font-weight: 800;
+      color: var(--purple);
+    }
+    .weather-condition {
+      font-size: 1.2rem;
+      margin-top: 8px;
+    }
+    .correlation-card {
+      background: var(--card);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      transition: transform 0.2s;
+    }
+    .correlation-card:hover {
+      transform: translateY(-2px);
+    }
+    .correlation-score {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--purple);
+    }
+    
+    /* Dark mode specific overrides for this page */
+    body.dark-mode .weather-card {
+      background: linear-gradient(135deg, #1a1a2e, #252b3d) !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .weather-temp {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .weather-condition {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .correlation-card {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .correlation-card div:first-child {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .correlation-score {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .daily-insight {
+      background: rgba(157, 140, 255, 0.1) !important;
+      border-left: 4px solid #9d8cff !important;
+    }
+    
+    body.dark-mode .daily-insight p {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode #weatherLocation {
+      color: #6c7892 !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Weather & Mood 🌤️</h1>
+    <p class="page-subtitle">See how weather affects your mood</p>
+
+    <div class="weather-card" id="weatherCard">
+      <div id="weatherIcon" style="font-size: 3rem;">🌤️</div>
+      <div class="weather-temp" id="weatherTemp">--°C</div>
+      <div class="weather-condition" id="weatherCondition">Loading...</div>
+      <div id="weatherLocation" style="font-size: 0.8rem; margin-top: 8px;">Your location</div>
+    </div>
+
+    <div class="section-label">📊 MOOD CORRELATION</div>
+    <div id="correlationStats"></div>
+
+    <div class="daily-insight">
+      <strong>💡 Weather Insight</strong>
+      <p id="weatherInsight">Based on your mood data, we'll analyze how weather affects your wellbeing.</p>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+// Demo weather data (simulated)
+const weatherConditions = [
+  { condition: 'Sunny', temp: 28, icon: '☀️', emoji: '😎' },
+  { condition: 'Partly Cloudy', temp: 24, icon: '⛅', emoji: '🙂' },
+  { condition: 'Cloudy', temp: 20, icon: '☁️', emoji: '😐' },
+  { condition: 'Rainy', temp: 16, icon: '🌧️', emoji: '😔' },
+  { condition: 'Stormy', temp: 14, icon: '⛈️', emoji: '😰' }
+];
+
+function getCurrentWeather() {
+  const hour = new Date().getHours();
+  let index = Math.floor(Math.random() * weatherConditions.length);
+  
+  // Make it somewhat realistic
+  if (hour > 6 && hour < 18) {
+    index = Math.min(2, index);
+  }
+  
+  return weatherConditions[index];
+}
+
+function displayWeather() {
+  const weather = getCurrentWeather();
+  const weatherIcon = document.getElementById('weatherIcon');
+  const weatherTemp = document.getElementById('weatherTemp');
+  const weatherCondition = document.getElementById('weatherCondition');
+  const weatherLocation = document.getElementById('weatherLocation');
+  
+  if (weatherIcon) weatherIcon.textContent = weather.icon;
+  if (weatherTemp) weatherTemp.textContent = `${weather.temp}°C`;
+  if (weatherCondition) weatherCondition.textContent = weather.condition;
+  
+  // Get user's location (simulated)
+  if (navigator.geolocation && weatherLocation) {
+    navigator.geolocation.getCurrentPosition(
+      pos => weatherLocation.textContent = `📍 ${Math.round(pos.coords.latitude)}°N, ${Math.round(pos.coords.longitude)}°E`,
+      () => weatherLocation.textContent = '📍 Demo Location'
+    );
+  } else if (weatherLocation) {
+    weatherLocation.textContent = '📍 Demo Location';
+  }
+}
+
+function analyzeCorrelation() {
+  const entries = getMoodJournal();
+  const weather = getCurrentWeather();
+  
+  const recentEntries = entries.slice(0, 14);
+  const moodValues = { 'Great': 5, 'Good': 4, 'Okay': 3, 'Low': 2, 'Stressed': 1 };
+  
+  const stats = {
+    sunny: { count: 0, totalMood: 0 },
+    cloudy: { count: 0, totalMood: 0 },
+    rainy: { count: 0, totalMood: 0 }
+  };
+  
+  recentEntries.forEach(entry => {
+    const date = new Date(entry.ts);
+    const hour = date.getHours();
+    let condition = 'sunny';
+    if (hour > 18 || hour < 6) condition = 'cloudy';
+    else if (Math.random() > 0.7) condition = 'rainy';
+    
+    stats[condition].count++;
+    stats[condition].totalMood += moodValues[entry.mood] || 3;
+  });
+  
+  const container = document.getElementById('correlationStats');
+  if (container) {
+    container.innerHTML = `
+      <div class="correlation-card">
+        <div>☀️ Sunny Days</div>
+        <div class="correlation-score">${stats.sunny.count ? (stats.sunny.totalMood / stats.sunny.count).toFixed(1) : '--'}/5</div>
+        <div style="font-size: 0.75rem; color: var(--text3);">${stats.sunny.count} days logged</div>
+      </div>
+      <div class="correlation-card">
+        <div>☁️ Cloudy Days</div>
+        <div class="correlation-score">${stats.cloudy.count ? (stats.cloudy.totalMood / stats.cloudy.count).toFixed(1) : '--'}/5</div>
+        <div style="font-size: 0.75rem; color: var(--text3);">${stats.cloudy.count} days logged</div>
+      </div>
+      <div class="correlation-card">
+        <div>🌧️ Rainy Days</div>
+        <div class="correlation-score">${stats.rainy.count ? (stats.rainy.totalMood / stats.rainy.count).toFixed(1) : '--'}/5</div>
+        <div style="font-size: 0.75rem; color: var(--text3);">${stats.rainy.count} days logged</div>
+      </div>
+    `;
+  }
+  
+  const insight = document.getElementById('weatherInsight');
+  if (insight) {
+    const currentMood = entries.length ? moodValues[entries[0].mood] : 3;
+    const weatherMood = weather.condition === 'Sunny' ? 'higher' : (weather.condition === 'Rainy' ? 'lower' : 'similar');
+    
+    insight.innerHTML = `Today is ${weather.condition.toLowerCase()}. People often report ${weatherMood} stress levels on days like this. ${currentMood > 3 ? 'Your recent mood has been positive!' : 'Try some breathing exercises to boost your mood.'}`;
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+  displayWeather();
+  analyzeCorrelation();
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

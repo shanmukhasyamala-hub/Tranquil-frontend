@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – Profile</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn active" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+      <h1 class="page-title" style="margin-bottom:0;">Profile 👤</h1>
+      <a href="index.html" style="font-size:0.82rem;font-weight:700;color:var(--text2);
+        text-decoration:none;display:flex;align-items:center;gap:5px;">
+        ↪ Logout
+      </a>
+    </div>
+
+    <!-- PROFILE CARD (view mode) -->
+    <div id="profileView">
+      <div class="profile-card">
+        <div class="profile-avatar-lg" id="profileAvatarLg">🧘</div>
+        <div>
+          <div class="profile-name" id="profileName">Shanmukha</div>
+          <div class="profile-id" id="profileId">user-xxxxx</div>
+          <a href="#" class="edit-link" onclick="showEdit(event)">✏️ Edit Profile</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- EDIT MODE -->
+    <div id="profileEdit" style="display:none;" class="card card-pad">
+      <div class="input-label">Choose Avatar</div>
+      <div class="avatar-grid" id="editAvatarGrid">
+        <div class="avatar-option" data-avatar="🧘" onclick="pickEditAvatar(this)">🧘</div>
+        <div class="avatar-option" data-avatar="🌸" onclick="pickEditAvatar(this)">🌸</div>
+        <div class="avatar-option" data-avatar="🦋" onclick="pickEditAvatar(this)">🦋</div>
+        <div class="avatar-option" data-avatar="🌊" onclick="pickEditAvatar(this)">🌊</div>
+        <div class="avatar-option" data-avatar="🌿" onclick="pickEditAvatar(this)">🌿</div>
+        <div class="avatar-option" data-avatar="⭐" onclick="pickEditAvatar(this)">⭐</div>
+      </div>
+      <div style="margin-top:14px;">
+        <label class="input-label" for="editName">Display Name</label>
+        <input class="input-field" id="editName" placeholder="Your name"/>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:14px;">
+        <button class="btn btn-primary" style="flex:2;" onclick="saveProfileEdit()">✓ Save</button>
+        <button class="btn btn-ghost" style="flex:1;" onclick="cancelEdit()">✕</button>
+      </div>
+    </div>
+
+    <!-- YOUR STATS -->
+    <div class="section-label">YOUR STATS</div>
+    <div class="your-stats">
+      <div class="mini-stat">
+        <div class="mini-stat-val" id="breathingStat">0</div>
+        <div class="mini-stat-label">Breathing Sessions</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-val" style="color:var(--purple);" id="avgStressStat">—</div>
+        <div class="mini-stat-label">Avg Stress Score</div>
+      </div>
+      <div class="mini-stat">
+        <div class="mini-stat-val" style="color:var(--orange);" id="moodStat">0</div>
+        <div class="mini-stat-label">Mood Entries</div>
+      </div>
+    </div>
+
+    <!-- MORE OPTIONS -->
+    <div class="section-label">MORE</div>
+    <a href="sleep.html" class="list-item">
+      <div class="list-icon-wrap">😴</div>
+      <div class="list-item-text"><div class="list-item-name">Sleep Tracking</div></div>
+      <span class="list-chevron">›</span>
+    </a>
+    <a href="vibration.html" class="list-item">
+      <div class="list-icon-wrap">📳</div>
+      <div class="list-item-text"><div class="list-item-name">Vibration Control</div></div>
+      <span class="list-chevron">›</span>
+    </a>
+    <a href="ai-tips.html" class="list-item">
+      <div class="list-icon-wrap">💡</div>
+      <div class="list-item-text"><div class="list-item-name">AI Tips &amp; Reminders</div></div>
+      <span class="list-chevron">›</span>
+    </a>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+  let editAvatar = '🧘';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+    loadProfile();
+    loadStats();
+  });
+
+  function loadProfile() {
+    const p = getProfile();
+    const avatarLg = document.getElementById('profileAvatarLg');
+    const profileName = document.getElementById('profileName');
+    const profileId = document.getElementById('profileId');
+    
+    if (avatarLg) avatarLg.textContent = p.avatar;
+    if (profileName) profileName.textContent = p.name;
+    if (profileId) profileId.textContent = p.id || 'user-xxxxx';
+  }
+
+  function loadStats() {
+    const sessions = getSessions();
+    const entries = getMoodJournal();
+    const logs = getStressLogs();
+    const avg = logs.length ? Math.round(logs.reduce((s,l)=>s+l.score,0)/logs.length) : 0;
+    
+    const breathingStat = document.getElementById('breathingStat');
+    const avgStressStat = document.getElementById('avgStressStat');
+    const moodStat = document.getElementById('moodStat');
+    
+    if (breathingStat) breathingStat.textContent = sessions.breathing || 0;
+    if (avgStressStat) avgStressStat.textContent = avg || '—';
+    if (moodStat) moodStat.textContent = entries.length;
+  }
+
+  function showEdit(e) {
+    e.preventDefault();
+    const p = getProfile();
+    editAvatar = p.avatar;
+    const editName = document.getElementById('editName');
+    if (editName) editName.value = p.name;
+    
+    document.querySelectorAll('#editAvatarGrid .avatar-option').forEach(el => {
+      el.classList.toggle('selected', el.dataset.avatar === editAvatar);
+    });
+    
+    const profileEdit = document.getElementById('profileEdit');
+    const profileView = document.getElementById('profileView');
+    
+    if (profileEdit) profileEdit.style.display = 'block';
+    if (profileView) profileView.style.display = 'none';
+  }
+
+  function cancelEdit() {
+    const profileEdit = document.getElementById('profileEdit');
+    const profileView = document.getElementById('profileView');
+    
+    if (profileEdit) profileEdit.style.display = 'none';
+    if (profileView) profileView.style.display = 'block';
+  }
+
+  function pickEditAvatar(el) {
+    document.querySelectorAll('#editAvatarGrid .avatar-option').forEach(a => a.classList.remove('selected'));
+    el.classList.add('selected');
+    editAvatar = el.dataset.avatar;
+  }
+
+  function saveProfileEdit() {
+    const nameInput = document.getElementById('editName');
+    const name = nameInput ? nameInput.value.trim() : '';
+    if (!name) { 
+      if (typeof showToast !== 'undefined') showToast('Please enter a name'); 
+      return; 
+    }
+    const p = getProfile();
+    p.name = name;
+    p.avatar = editAvatar;
+    saveProfile(p);
+    cancelEdit();
+    loadProfile();
+    if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+    if (typeof showToast !== 'undefined') showToast('✓ Profile updated!');
+  }
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

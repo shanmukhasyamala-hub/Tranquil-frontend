@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRANQUIL – Wellness Challenges</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    .challenge-card {
+      background: var(--card);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-bottom: 16px;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+    }
+    .challenge-card.completed {
+      background: linear-gradient(135deg, var(--card), var(--purple-bg));
+      border-color: var(--green);
+    }
+    .challenge-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .challenge-icon {
+      font-size: 2rem;
+    }
+    .challenge-title {
+      font-weight: 800;
+      font-size: 1rem;
+      flex: 1;
+    }
+    .challenge-points {
+      background: var(--purple);
+      color: white;
+      padding: 4px 12px;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+    .challenge-desc {
+      color: var(--text2);
+      font-size: 0.85rem;
+      margin-bottom: 12px;
+      margin-left: 44px;
+    }
+    .challenge-progress {
+      margin-left: 44px;
+      margin-top: 8px;
+    }
+    .progress-bar-bg {
+      background: var(--bg2);
+      border-radius: 100px;
+      height: 8px;
+      overflow: hidden;
+    }
+    .progress-bar-fill {
+      background: var(--purple);
+      height: 100%;
+      border-radius: 100px;
+      transition: width 0.3s;
+    }
+    .challenge-status {
+      margin-left: 44px;
+      margin-top: 8px;
+      font-size: 0.75rem;
+      color: var(--text3);
+    }
+    .btn-complete {
+      margin-left: 44px;
+      margin-top: 12px;
+      padding: 8px 16px;
+      font-size: 0.8rem;
+    }
+    .total-points {
+      background: linear-gradient(135deg, var(--purple), var(--purple-light));
+      color: white;
+      padding: 16px;
+      border-radius: var(--radius);
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .points-number {
+      font-size: 2rem;
+      font-weight: 800;
+    }
+    
+    /* ===== EXACT DARK MODE STYLES MATCHING REFERENCE ===== */
+    body.dark-mode .challenge-card {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .challenge-card.completed {
+      background: linear-gradient(135deg, #1e1e2e, rgba(157, 140, 255, 0.15)) !important;
+      border-color: #5dc9b3 !important;
+    }
+    
+    body.dark-mode .challenge-title {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .challenge-points {
+      background: #9d8cff !important;
+      color: #1a1f2e !important;
+    }
+    
+    body.dark-mode .challenge-desc {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .progress-bar-bg {
+      background: #2d2d44 !important;
+    }
+    
+    body.dark-mode .progress-bar-fill {
+      background: #9d8cff !important;
+    }
+    
+    body.dark-mode .challenge-status {
+      color: #6c7892 !important;
+    }
+    
+    body.dark-mode .challenge-card.completed .challenge-status {
+      color: #5dc9b3 !important;
+    }
+    
+    body.dark-mode .btn-complete {
+      background: #9d8cff !important;
+      color: #1a1f2e !important;
+    }
+    
+    body.dark-mode .btn-complete:hover {
+      background: #7c6fcd !important;
+    }
+    
+    body.dark-mode .total-points {
+      background: linear-gradient(135deg, #9d8cff, #7c6fcd) !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Wellness Challenges 🎯</h1>
+    <p class="page-subtitle">Complete challenges and earn points</p>
+
+    <div class="total-points">
+      <div style="font-size: 0.8rem;">🏆 YOUR TOTAL POINTS</div>
+      <div class="points-number" id="totalPoints">0</div>
+    </div>
+
+    <div id="challengesList"></div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+const challenges = [
+  { id: 'stress_check', name: 'Stress Check-in', desc: 'Log your stress level 3 times today', icon: '📊', points: 10, required: 3, check: () => getTodayStressCount() },
+  { id: 'breathe_once', name: 'Breathe Easy', desc: 'Complete 1 breathing session', icon: '🌬️', points: 15, required: 1, check: () => getTodayBreathingCount() },
+  { id: 'mood_log', name: 'Mood Tracker', desc: 'Log your mood today', icon: '📔', points: 10, required: 1, check: () => getTodayMoodCount() },
+  { id: 'hydration_goal', name: 'Hydration Hero', desc: 'Drink 1500ml of water', icon: '💧', points: 20, required: 1500, check: () => getTodayWaterIntake() },
+  { id: 'sleep_quality', name: 'Sleep Well', desc: 'Log 7+ hours of sleep', icon: '😴', points: 25, required: 420, check: () => getLastSleepHours() },
+  { id: 'meditate', name: 'Mindful Moment', desc: 'Complete a 5-min meditation', icon: '🧘', points: 20, required: 1, check: () => getTodayMeditationCount() }
+];
+
+function getCompletedChallenges() {
+  return JSON.parse(localStorage.getItem('tranquil_completed_challenges') || '[]');
+}
+
+function saveCompletedChallenges(completed) {
+  localStorage.setItem('tranquil_completed_challenges', JSON.stringify(completed));
+}
+
+function getTodayStressCount() {
+  const logs = getStressLogs();
+  const today = new Date().toISOString().slice(0, 10);
+  return logs.filter(l => new Date(l.ts).toISOString().slice(0, 10) === today).length;
+}
+
+function getTodayBreathingCount() {
+  const sessions = JSON.parse(localStorage.getItem('tranquil_breathing_today') || '0');
+  return sessions;
+}
+
+function getTodayMoodCount() {
+  const entries = getMoodJournal();
+  const today = new Date().toISOString().slice(0, 10);
+  return entries.filter(e => new Date(e.ts).toISOString().slice(0, 10) === today).length;
+}
+
+function getTodayWaterIntake() {
+  const hydration = JSON.parse(localStorage.getItem('tranquil_hydration') || '{"history":[]}');
+  const today = new Date().toISOString().slice(0, 10);
+  const todayEntry = hydration.history.find(h => h.date === today);
+  return todayEntry ? todayEntry.amount : 0;
+}
+
+function getLastSleepHours() {
+  const sleep = JSON.parse(localStorage.getItem('tranquil_sleep') || '[]');
+  if (!sleep.length) return 0;
+  const last = sleep[0];
+  const diff = (last.wakeH * 60 + last.wakeM) - (last.bedH * 60 + last.bedM);
+  return diff > 0 ? diff : diff + 1440;
+}
+
+function getTodayMeditationCount() {
+  const med = JSON.parse(localStorage.getItem('tranquil_meditation_today') || '0');
+  return med;
+}
+
+function recordBreathingSession() {
+  const count = getTodayBreathingCount();
+  localStorage.setItem('tranquil_breathing_today', JSON.stringify(count + 1));
+}
+
+function recordMeditationSession() {
+  const count = getTodayMeditationCount();
+  localStorage.setItem('tranquil_meditation_today', JSON.stringify(count + 1));
+}
+
+function renderChallenges() {
+  const completed = getCompletedChallenges();
+  const container = document.getElementById('challengesList');
+  if (!container) return;
+  
+  let totalPoints = 0;
+  
+  container.innerHTML = challenges.map(ch => {
+    const isCompleted = completed.includes(ch.id);
+    const currentValue = ch.check();
+    const progress = Math.min(100, (currentValue / ch.required) * 100);
+    
+    if (isCompleted) totalPoints += ch.points;
+    
+    let progressText = '';
+    if (ch.id === 'hydration_goal') progressText = `${currentValue}/${ch.required}ml`;
+    else if (ch.id === 'sleep_quality') progressText = `${Math.floor(currentValue/60)}h/${Math.floor(ch.required/60)}h`;
+    else progressText = `${currentValue}/${ch.required}`;
+    
+    return `
+      <div class="challenge-card ${isCompleted ? 'completed' : ''}">
+        <div class="challenge-header">
+          <div class="challenge-icon">${ch.icon}</div>
+          <div class="challenge-title">${ch.name}</div>
+          <div class="challenge-points">${ch.points} pts</div>
+        </div>
+        <div class="challenge-desc">${ch.desc}</div>
+        <div class="challenge-progress">
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" style="width: ${progress}%"></div>
+          </div>
+        </div>
+        <div class="challenge-status">Progress: ${progressText}</div>
+        ${!isCompleted && currentValue >= ch.required ? 
+          `<button class="btn btn-primary btn-sm btn-complete" onclick="completeChallenge('${ch.id}', ${ch.points})">Claim Reward 🎉</button>` : 
+          (isCompleted ? '<div class="challenge-status" style="color: var(--green);">✓ Completed!</div>' : '')}
+      </div>
+    `;
+  }).join('');
+  
+  const totalPointsEl = document.getElementById('totalPoints');
+  if (totalPointsEl) totalPointsEl.textContent = totalPoints;
+}
+
+function completeChallenge(id, points) {
+  const completed = getCompletedChallenges();
+  if (!completed.includes(id)) {
+    completed.push(id);
+    saveCompletedChallenges(completed);
+    if (typeof showToast !== 'undefined') {
+      showToast(`🎉 Challenge completed! +${points} points`);
+    }
+    playRewardSound();
+    renderChallenges();
+  }
+}
+
+function playRewardSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const gain = audioCtx.createGain();
+    gain.connect(audioCtx.destination);
+    gain.gain.value = 0.1;
+    
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => {
+      setTimeout(() => {
+        const osc = audioCtx.createOscillator();
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.2);
+      }, i * 120);
+    });
+  } catch(e) {}
+}
+
+// Reset daily counters
+function resetDailyCounters() {
+  const today = new Date().toISOString().slice(0, 10);
+  const lastReset = localStorage.getItem('tranquil_last_reset');
+  if (lastReset !== today) {
+    localStorage.setItem('tranquil_breathing_today', '0');
+    localStorage.setItem('tranquil_meditation_today', '0');
+    localStorage.setItem('tranquil_last_reset', today);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+  resetDailyCounters();
+  renderChallenges();
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

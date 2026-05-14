@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRANQUIL – Achievements</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    .achievement-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .achievement-card {
+      background: var(--card);
+      border-radius: var(--radius-sm);
+      padding: 20px 12px;
+      text-align: center;
+      border: 1px solid var(--border);
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .achievement-card.locked {
+      opacity: 0.6;
+      filter: grayscale(0.3);
+    }
+    .achievement-card.unlocked {
+      background: linear-gradient(135deg, var(--card), var(--purple-bg));
+      border-color: var(--purple);
+    }
+    .achievement-icon {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+    .achievement-name {
+      font-weight: 800;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+    }
+    .achievement-desc {
+      font-size: 0.7rem;
+      color: var(--text3);
+    }
+    .achievement-progress {
+      margin-top: 10px;
+      height: 4px;
+      background: var(--bg2);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: var(--purple);
+      border-radius: 2px;
+      transition: width 0.3s;
+    }
+    .unlock-badge {
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      font-size: 0.7rem;
+      background: var(--purple);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+    .total-score {
+      background: var(--purple-bg);
+      border-radius: var(--radius);
+      padding: 16px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .score-number {
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--purple);
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Achievements 🏆</h1>
+    <p class="page-subtitle">Earn badges for your wellness journey</p>
+
+    <div class="total-score">
+      <div style="font-size: 0.8rem; color: var(--text2);">Wellness Score</div>
+      <div class="score-number" id="wellnessScore">0</div>
+      <div style="font-size: 0.7rem;">Points earned from achievements</div>
+    </div>
+
+    <div class="achievement-grid" id="achievementsGrid"></div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+const achievements = [
+  { id: 'first_steps', name: 'First Steps', desc: 'Complete your first stress check-in', icon: '👣', points: 10, check: () => getStressLogs().length >= 1 },
+  { id: 'stress_warrior', name: 'Stress Warrior', desc: 'Log stress 7 days in a row', icon: '⚔️', points: 50, check: () => hasStreak(7) },
+  { id: 'meditation_master', name: 'Meditation Master', desc: 'Complete 10 meditation sessions', icon: '🧘', points: 100, check: () => getMeditationCount() >= 10 },
+  { id: 'mood_tracker', name: 'Mood Tracker', desc: 'Log 30 mood entries', icon: '📔', points: 75, check: () => getMoodJournal().length >= 30 },
+  { id: 'calm_mind', name: 'Calm Mind', desc: 'Achieve stress score below 30', icon: '😌', points: 40, check: () => hasLowStress() },
+  { id: 'sleep_scholar', name: 'Sleep Scholar', desc: 'Log sleep for 14 nights', icon: '😴', points: 60, check: () => getSleepCount() >= 14 },
+  { id: 'breathe_easy', name: 'Breathe Easy', desc: 'Complete 20 breathing sessions', icon: '🌬️', points: 80, check: () => getBreathingSessions() >= 20 },
+  { id: 'wellness_guru', name: 'Wellness Guru', desc: 'Unlock all achievements', icon: '🌟', points: 200, check: () => getAllUnlocked() }
+];
+
+function getUnlockedAchievements() {
+  return JSON.parse(localStorage.getItem('tranquil_achievements') || '[]');
+}
+
+function saveUnlockedAchievements(unlocked) {
+  localStorage.setItem('tranquil_achievements', JSON.stringify(unlocked));
+}
+
+function getMeditationCount() {
+  const data = JSON.parse(localStorage.getItem('tranquil_meditation') || '{"sessions":0}');
+  return data.sessions;
+}
+
+function getSleepCount() {
+  const sleep = JSON.parse(localStorage.getItem('tranquil_sleep') || '[]');
+  return sleep.length;
+}
+
+function getBreathingSessions() {
+  const sessions = getSessions();
+  return sessions.breathing || 0;
+}
+
+function hasStreak(days) {
+  const logs = getStressLogs();
+  if (logs.length < days) return false;
+  const now = Date.now();
+  const dayMs = 86400000;
+  for (let i = 0; i < days; i++) {
+    const dayStart = now - i * dayMs;
+    const hasEntry = logs.some(l => l.ts >= dayStart && l.ts < dayStart + dayMs);
+    if (!hasEntry) return false;
+  }
+  return true;
+}
+
+function hasLowStress() {
+  const logs = getStressLogs();
+  if (!logs.length) return false;
+  const recent = logs.slice(-7);
+  return recent.some(l => l.score < 30);
+}
+
+function getAllUnlocked() {
+  const unlocked = getUnlockedAchievements();
+  return unlocked.length === achievements.length;
+}
+
+function checkAndUnlock() {
+  const unlocked = getUnlockedAchievements();
+  let newUnlocked = false;
+  
+  achievements.forEach(achievement => {
+    if (!unlocked.includes(achievement.id) && achievement.check()) {
+      unlocked.push(achievement.id);
+      newUnlocked = true;
+      showToast(`🏆 Achievement Unlocked: ${achievement.name}! +${achievement.points} points`);
+      playUnlockSound();
+    }
+  });
+  
+  if (newUnlocked) {
+    saveUnlockedAchievements(unlocked);
+  }
+  
+  renderAchievements();
+}
+
+function renderAchievements() {
+  const unlocked = getUnlockedAchievements();
+  const grid = document.getElementById('achievementsGrid');
+  let totalPoints = 0;
+  
+  if (!grid) return;
+  
+  grid.innerHTML = achievements.map(ach => {
+    const isUnlocked = unlocked.includes(ach.id);
+    if (isUnlocked) totalPoints += ach.points;
+    
+    const progress = isUnlocked ? 100 : 0;
+    
+    return `
+      <div class="achievement-card ${isUnlocked ? 'unlocked' : 'locked'}">
+        ${isUnlocked ? '<div class="unlock-badge">✓</div>' : ''}
+        <div class="achievement-icon">${ach.icon}</div>
+        <div class="achievement-name">${ach.name}</div>
+        <div class="achievement-desc">${ach.desc}</div>
+        <div class="achievement-progress">
+          <div class="progress-fill" style="width: ${progress}%"></div>
+        </div>
+        <div style="font-size: 0.65rem; margin-top: 6px; color: var(--purple);">${ach.points} pts</div>
+      </div>
+    `;
+  }).join('');
+  
+  const wellnessScore = document.getElementById('wellnessScore');
+  if (wellnessScore) wellnessScore.textContent = totalPoints;
+}
+
+function playUnlockSound() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.frequency.value = 523.25;
+    gain.gain.value = 0.2;
+    osc.start();
+    gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.5);
+    osc.stop(audioCtx.currentTime + 0.5);
+    
+    setTimeout(() => {
+      const osc2 = audioCtx.createOscillator();
+      osc2.frequency.value = 659.25;
+      osc2.connect(gain);
+      osc2.start();
+      osc2.stop(audioCtx.currentTime + 0.5);
+    }, 150);
+  } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+  checkAndUnlock();
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – Sounds</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+</head>
+<body>
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <h1 class="page-title">Calm Sounds 🎵</h1>
+    <p class="page-subtitle">Immerse yourself in soothing audio</p>
+
+    <div class="section-label">NATURE &amp; AMBIENT</div>
+    <div class="sounds-grid" id="soundsGrid">
+      <div class="sound-card" onclick="toggleSound(this,'rain')" data-id="rain">
+        <span class="sound-emoji">🌧️</span>
+        <div class="sound-name">Rain</div>
+        <div class="sound-dots"><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span></div>
+      </div>
+      <div class="sound-card" onclick="toggleSound(this,'ocean')" data-id="ocean">
+        <span class="sound-emoji">🌊</span>
+        <div class="sound-name">Ocean Waves</div>
+        <div class="sound-dots"><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span></div>
+      </div>
+      <div class="sound-card" onclick="toggleSound(this,'forest')" data-id="forest">
+        <span class="sound-emoji">🌲</span>
+        <div class="sound-name">Forest</div>
+        <div class="sound-dots"><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span></div>
+      </div>
+      <div class="sound-card" onclick="toggleSound(this,'white')" data-id="white">
+        <span class="sound-emoji">🌫️</span>
+        <div class="sound-name">White Noise</div>
+        <div class="sound-dots"><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span></div>
+      </div>
+      <div class="sound-card" onclick="toggleSound(this,'fire')" data-id="fire">
+        <span class="sound-emoji">🔥</span>
+        <div class="sound-name">Fireplace</div>
+        <div class="sound-dots"><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span></div>
+      </div>
+      <div class="sound-card" onclick="toggleSound(this,'chimes')" data-id="chimes">
+        <span class="sound-emoji">🎐</span>
+        <div class="sound-name">Wind Chimes</div>
+        <div class="sound-dots"><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span><span class="sound-dot"></span></div>
+      </div>
+    </div>
+
+    <p style="font-size:0.73rem;color:var(--text3);text-align:center;margin:10px 0 24px;font-style:italic;">
+      * Visual simulation — connect headphones for actual audio
+    </p>
+
+    <div id="nowPlayingBar" style="display:none;background:var(--purple-bg);border-radius:var(--radius-sm);
+      padding:14px 16px;margin-bottom:20px;align-items:center;gap:12px;">
+      <span id="nowPlayingIcon" style="font-size:1.4rem;">🌧️</span>
+      <div style="flex:1;">
+        <div style="font-size:0.82rem;font-weight:700;color:var(--purple);" id="nowPlayingName">Rain</div>
+        <div style="font-size:0.72rem;color:var(--text2);">Now playing</div>
+      </div>
+      <button onclick="stopAll()" style="background:var(--purple);color:white;border:none;border-radius:100px;
+        padding:6px 14px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Stop</button>
+    </div>
+
+    <div class="section-label">MY MUSIC</div>
+    <div class="upload-box" onclick="document.getElementById('musicUpload').click()">
+      <div class="upload-icon-wrap">📤</div>
+      <div class="upload-title">Upload from Device</div>
+      <div class="upload-desc">MP3, WAV, OGG, FLAC supported</div>
+      <input type="file" id="musicUpload" accept="audio/*" style="display:none;" onchange="handleMusicUpload(this)"/>
+    </div>
+
+    <div id="uploadedTracks" style="margin-top:12px;"></div>
+
+    <div style="background:var(--purple-bg);border-radius:var(--radius-sm);padding:14px 16px;margin-top:16px;">
+      <p style="font-size:0.83rem;color:var(--text2);line-height:1.6;">
+        💡 <strong>Tip:</strong> Combine nature sounds with breathing exercises for maximum relaxation effect.
+      </p>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item active" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+<div class="toast" id="globalToast"></div>
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+<script>
+  syncHeaderAvatar();
+  let currentlyPlaying = null;
+  let audioCtx = null;
+  let noiseNode = null;
+  const uploadedAudios = {};
+
+  function getAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    return audioCtx;
+  }
+
+  function playNoise(type) {
+    stopNoise();
+    const ctx = getAudioCtx();
+    const bufferSize = ctx.sampleRate * 2;
+    const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * 0.15;
+    }
+    noiseNode = ctx.createBufferSource();
+    noiseNode.buffer = buffer;
+    noiseNode.loop = true;
+    const gain = ctx.createGain();
+    gain.gain.value = 0.3;
+    if (type === 'ocean') {
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass'; filter.frequency.value = 400;
+      noiseNode.connect(filter); filter.connect(gain);
+    } else {
+      noiseNode.connect(gain);
+    }
+    gain.connect(ctx.destination);
+    noiseNode.start();
+  }
+
+  function stopNoise() {
+    if (noiseNode) { try { noiseNode.stop(); } catch{} noiseNode = null; }
+  }
+
+  function toggleSound(el, id) {
+    if (currentlyPlaying === id) { stopAll(); return; }
+    stopAll();
+    currentlyPlaying = id;
+    el.classList.add('playing');
+    if (id === 'rain' || id === 'ocean' || id === 'white') {
+      try { playNoise(id); } catch(e) {}
+    }
+    const bar = document.getElementById('nowPlayingBar');
+    document.getElementById('nowPlayingName').textContent = el.querySelector('.sound-name').textContent;
+    document.getElementById('nowPlayingIcon').textContent = el.querySelector('.sound-emoji').textContent;
+    bar.style.display = 'flex';
+    showToast('▶ Playing: ' + el.querySelector('.sound-name').textContent);
+  }
+
+  function stopAll() {
+    stopNoise();
+    currentlyPlaying = null;
+    document.querySelectorAll('.sound-card').forEach(c => c.classList.remove('playing'));
+    document.getElementById('nowPlayingBar').style.display = 'none';
+    Object.values(uploadedAudios).forEach(a => { a.pause(); a.currentTime = 0; });
+  }
+
+  function handleMusicUpload(input) {
+    if (!input.files.length) return;
+    const file = input.files[0];
+    const url = URL.createObjectURL(file);
+    const audio = new Audio(url);
+    audio.loop = true;
+    uploadedAudios[file.name] = audio;
+    const container = document.getElementById('uploadedTracks');
+    const div = document.createElement('div');
+    div.className = 'list-item';
+    div.innerHTML = `<div class="list-icon-wrap">🎧</div>
+      <div class="list-item-text"><div class="list-item-name">${file.name}</div></div>
+      <button onclick="playUploaded('${file.name}',this)"
+        style="background:var(--purple);color:white;border:none;border-radius:100px;
+        padding:7px 14px;font-size:0.75rem;font-weight:700;cursor:pointer;font-family:inherit;">Play</button>`;
+    container.appendChild(div);
+    showToast('✓ Track added: ' + file.name);
+  }
+
+  function playUploaded(name, btn) {
+    stopAll();
+    const audio = uploadedAudios[name];
+    if (audio) { audio.play(); currentlyPlaying = name; }
+    document.getElementById('nowPlayingName').textContent = name;
+    document.getElementById('nowPlayingIcon').textContent = '🎧';
+    document.getElementById('nowPlayingBar').style.display = 'flex';
+  }
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+</body>
+</html>

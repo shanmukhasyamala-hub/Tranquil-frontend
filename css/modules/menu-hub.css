@@ -1,0 +1,396 @@
+/* ============================================
+   MENU HUB MODULE STYLES
+   All features in one beautiful hub
+   ============================================ */
+
+/* Hub Header */
+.hub-header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.hub-header .page-title {
+  margin-bottom: 4px;
+}
+
+/* Stats Cards */
+.hub-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.hub-stat-card {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 12px 8px;
+  text-align: center;
+  border: 1px solid var(--border);
+  transition: transform 0.2s;
+}
+
+.hub-stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.hub-stat-icon {
+  font-size: 1.3rem;
+  margin-bottom: 4px;
+}
+
+.hub-stat-value {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--purple);
+  line-height: 1.2;
+}
+
+.hub-stat-label {
+  font-size: 0.6rem;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 4px;
+}
+
+/* Greeting Card */
+.hub-greeting {
+  background: linear-gradient(135deg, var(--purple-bg), var(--card));
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border: 1px solid var(--border);
+}
+
+.greeting-icon {
+  font-size: 2rem;
+}
+
+.greeting-text {
+  flex: 1;
+}
+
+.greeting-text strong {
+  font-size: 1rem;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.greeting-text p {
+  font-size: 0.8rem;
+  color: var(--text2);
+  margin: 0;
+}
+
+/* Feature Grid - All 10 Features */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.feature-card {
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  padding: 16px 12px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(124, 111, 205, 0.1), transparent);
+  transition: left 0.3s;
+}
+
+.feature-card:hover::before {
+  left: 100%;
+}
+
+.feature-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--purple);
+  box-shadow: var(--shadow);
+}
+
+.feature-icon {
+  font-size: 2rem;
+  margin-bottom: 8px;
+  transition: transform 0.2s;
+}
+
+.feature-card:hover .feature-icon {
+  transform: scale(1.1);
+}
+
+.feature-name {
+  font-weight: 800;
+  font-size: 0.9rem;
+  margin-bottom: 4px;
+  color: var(--text);
+}
+
+.feature-desc {
+  font-size: 0.7rem;
+  color: var(--text3);
+}
+
+.feature-badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--purple);
+  color: white;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 100px;
+  min-width: 24px;
+  text-align: center;
+}
+
+.feature-badge.new {
+  background: var(--orange);
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* Hub Section */
+.hub-section {
+  margin-bottom: 24px;
+}
+
+/* Activity List */
+.activity-list {
+  background: var(--card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.activity-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--bg2);
+  transition: background 0.2s;
+}
+
+.activity-item:last-child {
+  border-bottom: none;
+}
+
+.activity-item:hover {
+  background: var(--purple-bg);
+}
+
+.activity-icon {
+  font-size: 1.2rem;
+  width: 32px;
+  text-align: center;
+}
+
+.activity-text {
+  flex: 1;
+  font-size: 0.85rem;
+  color: var(--text2);
+}
+
+.activity-time {
+  font-size: 0.7rem;
+  color: var(--text3);
+}
+
+/* Daily Tip Card */
+.daily-tip-card {
+  background: var(--purple-bg);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  margin-top: 8px;
+  border: 1px solid rgba(124, 111, 205, 0.2);
+}
+
+.tip-icon {
+  font-size: 1.3rem;
+}
+
+.tip-content {
+  flex: 1;
+}
+
+.tip-content strong {
+  font-size: 0.8rem;
+  display: block;
+  margin-bottom: 4px;
+  color: var(--purple);
+}
+
+.tip-content p {
+  font-size: 0.8rem;
+  color: var(--text2);
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Feature Modal (for when clicked) */
+.feature-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.feature-modal.hidden {
+  display: none;
+}
+
+.feature-modal-content {
+  background: white;
+  border-radius: 28px;
+  max-width: 350px;
+  width: 100%;
+  padding: 28px 24px;
+  text-align: center;
+  animation: slideUp 0.3s ease;
+}
+
+.feature-modal-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+}
+
+.feature-modal-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.feature-modal-desc {
+  font-size: 0.85rem;
+  color: var(--text2);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.feature-modal-buttons {
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.feature-modal-buttons button {
+  flex: 1;
+  padding: 12px;
+  border-radius: 100px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.modal-open-btn {
+  background: var(--purple);
+  color: white;
+}
+
+.modal-open-btn:hover {
+  background: #6a5ebc;
+  transform: translateY(-1px);
+}
+
+.modal-cancel-btn {
+  background: var(--bg);
+  color: var(--text2);
+}
+
+.modal-cancel-btn:hover {
+  background: var(--bg2);
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Responsive */
+@media (max-width: 430px) {
+  .hub-stats {
+    gap: 8px;
+  }
+  
+  .hub-stat-card {
+    padding: 8px 4px;
+  }
+  
+  .hub-stat-value {
+    font-size: 1.1rem;
+  }
+  
+  .feature-grid {
+    gap: 10px;
+  }
+  
+  .feature-card {
+    padding: 12px 8px;
+  }
+  
+  .feature-icon {
+    font-size: 1.6rem;
+  }
+  
+  .feature-name {
+    font-size: 0.8rem;
+  }
+  
+  .feature-desc {
+    font-size: 0.65rem;
+  }
+}
+
+/* Dark Mode Support (if added later) */
+@media (prefers-color-scheme: dark) {
+  .feature-modal-content {
+    background: var(--card);
+  }
+}

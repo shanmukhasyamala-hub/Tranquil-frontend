@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRANQUIL – Mood Calendar</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .calendar-day-name {
+      text-align: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+      color: var(--text3);
+      padding: 8px 0;
+    }
+    .calendar-day {
+      aspect-ratio: 1;
+      background: var(--card);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+    }
+    .calendar-day.empty {
+      background: transparent;
+      border: 1px dashed var(--bg2);
+      cursor: default;
+    }
+    .calendar-day.has-mood {
+      background: var(--purple-bg);
+      border-color: var(--purple);
+    }
+    .calendar-day:hover:not(.empty) {
+      transform: scale(1.05);
+    }
+    .mood-emoji-cal {
+      font-size: 1.2rem;
+    }
+    .day-number {
+      font-size: 0.7rem;
+      font-weight: 600;
+      margin-top: 2px;
+    }
+    .mood-stats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 20px;
+    }
+    .mood-stat {
+      text-align: center;
+      padding: 8px;
+      background: var(--card);
+      border-radius: var(--radius-sm);
+    }
+    .mood-stat-emoji {
+      font-size: 1.2rem;
+    }
+    .mood-stat-count {
+      font-weight: 800;
+      font-size: 0.9rem;
+    }
+    
+    /* ===== EXACT DARK MODE STYLES MATCHING REFERENCE ===== */
+    body.dark-mode .calendar-header button {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .calendar-header button:hover {
+      background: #2d2d44 !important;
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode #currentMonth {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .calendar-day-name {
+      color: #6c7892 !important;
+    }
+    
+    body.dark-mode .calendar-day {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .calendar-day.has-mood {
+      background: rgba(157, 140, 255, 0.15) !important;
+      border-color: #9d8cff !important;
+    }
+    
+    body.dark-mode .calendar-day.has-mood .mood-emoji-cal {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .calendar-day .day-number {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .calendar-day.has-mood .day-number {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .mood-stat {
+      background: #1e1e2e !important;
+      border: 1px solid #2d2d44 !important;
+    }
+    
+    body.dark-mode .mood-stat-emoji {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .mood-stat-count {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .mood-stat div:last-child {
+      color: #6c7892 !important;
+    }
+    
+    body.dark-mode .journal-empty {
+      color: #6c7892 !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Mood Calendar 📅</h1>
+    <p class="page-subtitle">Visualize your emotional journey</p>
+
+    <div class="calendar-header">
+      <button class="btn btn-sm btn-ghost" onclick="changeMonth(-1)">← Prev</button>
+      <h3 id="currentMonth" style="font-size: 1.1rem;">March 2026</h3>
+      <button class="btn btn-sm btn-ghost" onclick="changeMonth(1)">Next →</button>
+    </div>
+
+    <div class="calendar-grid" id="calendarGrid"></div>
+
+    <div class="section-label">MOOD STATISTICS</div>
+    <div class="mood-stats" id="moodStats"></div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+const moodEmojis = { 'Great': '😁', 'Good': '🙂', 'Okay': '😐', 'Low': '😔', 'Stressed': '😰' };
+let currentDate = new Date();
+
+function getMoodForDate(dateStr) {
+  const entries = getMoodJournal();
+  const entry = entries.find(e => new Date(e.ts).toISOString().slice(0, 10) === dateStr);
+  return entry ? { mood: entry.mood, emoji: moodEmojis[entry.mood] } : null;
+}
+
+function renderCalendar() {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const startWeekday = firstDay.getDay();
+  const totalDays = lastDay.getDate();
+  
+  const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const currentMonthEl = document.getElementById('currentMonth');
+  if (currentMonthEl) {
+    currentMonthEl.textContent = `${monthNames[month]} ${year}`;
+  }
+  
+  let days = [];
+  for (let i = 0; i < startWeekday; i++) {
+    days.push(null);
+  }
+  for (let i = 1; i <= totalDays; i++) {
+    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(i).padStart(2, '0')}`;
+    const mood = getMoodForDate(dateStr);
+    days.push({ day: i, mood: mood, dateStr: dateStr });
+  }
+  
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  let html = dayNames.map(name => `<div class="calendar-day-name">${name}</div>`).join('');
+  
+  days.forEach(day => {
+    if (day === null) {
+      html += `<div class="calendar-day empty"></div>`;
+    } else {
+      html += `
+        <div class="calendar-day ${day.mood ? 'has-mood' : ''}" onclick="showDayMood('${day.dateStr}')">
+          <div class="mood-emoji-cal">${day.mood ? day.mood.emoji : '📅'}</div>
+          <div class="day-number">${day.day}</div>
+        </div>
+      `;
+    }
+  });
+  
+  const calendarGrid = document.getElementById('calendarGrid');
+  if (calendarGrid) calendarGrid.innerHTML = html;
+  updateMoodStats();
+}
+
+function updateMoodStats() {
+  const entries = getMoodJournal();
+  const currentMonth = currentDate.getMonth();
+  const currentYear = currentDate.getFullYear();
+  
+  const monthEntries = entries.filter(e => {
+    const d = new Date(e.ts);
+    return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+  });
+  
+  const stats = { 'Great': 0, 'Good': 0, 'Okay': 0, 'Low': 0, 'Stressed': 0 };
+  monthEntries.forEach(e => { if (stats[e.mood] !== undefined) stats[e.mood]++; });
+  
+  const statsHtml = Object.entries(stats).map(([mood, count]) => `
+    <div class="mood-stat">
+      <div class="mood-stat-emoji">${moodEmojis[mood]}</div>
+      <div class="mood-stat-count">${count}</div>
+      <div style="font-size: 0.65rem;">${mood}</div>
+    </div>
+  `).join('');
+  
+  const moodStats = document.getElementById('moodStats');
+  if (moodStats) {
+    moodStats.innerHTML = statsHtml || '<div class="journal-empty">No moods this month</div>';
+  }
+}
+
+function showDayMood(dateStr) {
+  const mood = getMoodForDate(dateStr);
+  if (mood) {
+    if (typeof showToast !== 'undefined') {
+      showToast(`${dateStr}: ${mood.mood} ${mood.emoji}`);
+    }
+  } else {
+    if (typeof showToast !== 'undefined') {
+      showToast(`${dateStr}: No mood logged yet`);
+    }
+  }
+}
+
+function changeMonth(delta) {
+  currentDate.setMonth(currentDate.getMonth() + delta);
+  renderCalendar();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+  renderCalendar();
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

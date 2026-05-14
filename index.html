@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL</title>
+  <link rel="stylesheet" href="css/style.css"/>
+</head>
+<body>
+<div class="app-wrapper">
+
+  <!-- SPLASH PAGE -->
+  <div class="splash-page" id="splashPage">
+    <div class="splash-icon-wrap">🧘</div>
+    <h1 class="splash-title">TRANQUIL</h1>
+    <p class="splash-sub">Your personal stress relief companion. Monitor, breathe, and find your calm.</p>
+
+    <ul class="feature-list">
+      <li class="feature-row"><span>💓</span> Real-time stress monitoring</li>
+      <li class="feature-row"><span>🌬️</span> Guided breathing exercises</li>
+      <li class="feature-row"><span>📊</span> Weekly wellness analytics</li>
+      <li class="feature-row"><span>🌙</span> Sleep quality tracking</li>
+    </ul>
+
+    <button class="btn btn-primary btn-full" onclick="handleGetStarted()" style="font-size:1.05rem; padding:16px;">
+      Get Started
+    </button>
+    <p class="splash-footer">🔒 Secure login powered by Internet Identity</p>
+  </div>
+
+  <!-- ONBOARDING MODAL -->
+  <div class="modal-overlay hidden" id="onboardModal">
+    <div class="modal-sheet">
+      <div class="modal-header">
+        <div>
+          <div class="modal-title">Welcome! 🌸</div>
+          <div style="font-size:0.85rem;color:var(--text2);margin-top:4px;">Let's set up your TRANQUIL profile</div>
+        </div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+
+      <div style="margin-bottom:18px;">
+        <div class="input-label">Choose your avatar</div>
+        <div class="avatar-grid" id="avatarGrid">
+          <div class="avatar-option selected" data-avatar="🧘" onclick="pickAvatar(this)">🧘</div>
+          <div class="avatar-option" data-avatar="🌸" onclick="pickAvatar(this)">🌸</div>
+          <div class="avatar-option" data-avatar="🦋" onclick="pickAvatar(this)">🦋</div>
+          <div class="avatar-option" data-avatar="🌊" onclick="pickAvatar(this)">🌊</div>
+          <div class="avatar-option" data-avatar="🌿" onclick="pickAvatar(this)">🌿</div>
+          <div class="avatar-option" data-avatar="⭐" onclick="pickAvatar(this)">⭐</div>
+        </div>
+        <!-- Preview -->
+        <div style="display:flex;justify-content:center;margin-top:12px;">
+          <div style="width:64px;height:64px;border-radius:18px;background:var(--purple-bg);
+            display:flex;align-items:center;justify-content:center;font-size:2rem;
+            box-shadow:0 4px 16px rgba(124,111,205,0.25);" id="avatarPreview">🧘</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:20px;">
+        <label class="input-label" for="nameInput">Your name</label>
+        <input class="input-field" id="nameInput" placeholder="Enter your name..." maxlength="24" autocomplete="off" autocorrect="off" spellcheck="false"/>
+      </div>
+
+      <button class="btn btn-primary btn-full" onclick="finishOnboarding()" style="padding:16px;">
+        Start My Journey 🌿
+      </button>
+    </div>
+  </div>
+
+</div><!-- end app-wrapper -->
+
+<script src="js/app.js"></script>
+<script>
+  let chosenAvatar = '🧘';
+
+  function handleGetStarted() {
+    // If already set up, go directly to home
+    if (!needsOnboarding()) {
+      window.location.href = 'home.html';
+      return;
+    }
+    document.getElementById('onboardModal').classList.remove('hidden');
+  }
+
+  function closeModal() {
+    document.getElementById('onboardModal').classList.add('hidden');
+  }
+
+  function pickAvatar(el) {
+    document.querySelectorAll('.avatar-option').forEach(a => a.classList.remove('selected'));
+    el.classList.add('selected');
+    chosenAvatar = el.dataset.avatar;
+    document.getElementById('avatarPreview').textContent = chosenAvatar;
+  }
+
+  function finishOnboarding() {
+    const name = document.getElementById('nameInput').value.trim();
+    if (!name) {
+      document.getElementById('nameInput').focus();
+      document.getElementById('nameInput').style.borderColor = '#e85c5c';
+      return;
+    }
+    saveProfile({ name, avatar: chosenAvatar, id: 'user-' + Math.random().toString(36).slice(2,8) });
+    window.location.href = 'home.html';
+  }
+
+  // Auto-redirect if already onboarded
+  document.addEventListener('DOMContentLoaded', () => {
+    if (!needsOnboarding() && window.location.hash !== '#force') {
+      // Uncomment below to auto-redirect returning users:
+      // window.location.href = 'home.html';
+    }
+  });
+</script>
+</body>
+</html>

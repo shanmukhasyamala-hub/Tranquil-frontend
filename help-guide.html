@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRANQUIL – Help & Guide</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    .faq-item {
+      background: var(--card);
+      border-radius: var(--radius-sm);
+      margin-bottom: 12px;
+      overflow: hidden;
+    }
+    .faq-question {
+      padding: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid transparent;
+      transition: all 0.2s;
+    }
+    .faq-question:hover {
+      background: var(--purple-bg);
+    }
+    .faq-question.active {
+      border-bottom-color: var(--purple);
+    }
+    .faq-answer {
+      padding: 0 16px;
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, padding 0.3s ease;
+      color: var(--text2);
+      line-height: 1.6;
+    }
+    .faq-answer.show {
+      padding: 16px;
+      max-height: 500px;
+    }
+    .guide-step {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 20px;
+      align-items: flex-start;
+    }
+    .step-number {
+      width: 32px;
+      height: 32px;
+      background: var(--purple);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      flex-shrink: 0;
+    }
+    
+    /* ===== EXACT DARK MODE STYLES MATCHING REFERENCE ===== */
+    body.dark-mode .faq-item {
+      background: #1e1e2e !important;
+      border: 1px solid #2d2d44 !important;
+    }
+    
+    body.dark-mode .faq-question {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .faq-question span {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .faq-question:hover {
+      background: rgba(157, 140, 255, 0.1) !important;
+    }
+    
+    body.dark-mode .faq-question.active {
+      border-bottom-color: #9d8cff !important;
+    }
+    
+    body.dark-mode .faq-answer {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .faq-answer strong {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .guide-step div:not(.step-number) {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .step-number {
+      background: #9d8cff !important;
+      color: #1a1f2e !important;
+    }
+    
+    body.dark-mode .card h3 {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .daily-insight {
+      background: rgba(157, 140, 255, 0.1) !important;
+      border-left: 4px solid #9d8cff !important;
+    }
+    
+    body.dark-mode .daily-insight strong {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .daily-insight p {
+      color: #a8b3cf !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Help & Guide 📖</h1>
+    <p class="page-subtitle">Everything you need to know about TRANQUIL</p>
+
+    <div class="card card-pad" style="margin-bottom: 20px;">
+      <h3>🚀 Quick Start Guide</h3>
+      <div class="guide-step">
+        <div class="step-number">1</div>
+        <div>Set up your profile with name and avatar</div>
+      </div>
+      <div class="guide-step">
+        <div class="step-number">2</div>
+        <div>Check your stress level on the Home dashboard</div>
+      </div>
+      <div class="guide-step">
+        <div class="step-number">3</div>
+        <div>Try breathing exercises when stressed</div>
+      </div>
+      <div class="guide-step">
+        <div class="step-number">4</div>
+        <div>Log your mood daily in the Journal</div>
+      </div>
+      <div class="guide-step">
+        <div class="step-number">5</div>
+        <div>Track sleep quality for better rest</div>
+      </div>
+    </div>
+
+    <div class="section-label">FREQUENTLY ASKED QUESTIONS</div>
+    
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        How does stress monitoring work?
+        <span>▼</span>
+      </div>
+      <div class="faq-answer">
+        TRANQUIL simulates stress monitoring based on your interactions. In a real implementation, it would connect to wearable devices that track heart rate, HRV, and skin temperature. The demo generates realistic stress patterns to demonstrate the app's functionality.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        Is my data private and secure?
+        <span>▼</span>
+      </div>
+      <div class="faq-answer">
+        Yes! All your data is stored locally in your browser's localStorage. No data is sent to any server. You can export your data anytime from Settings, and you have full control to delete it whenever you want.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        What are the breathing techniques?
+        <span>▼</span>
+      </div>
+      <div class="faq-answer">
+        <strong>4-7-8 Breathing:</strong> Inhale 4 seconds, hold 7, exhale 8 - great for anxiety.<br>
+        <strong>Box Breathing:</strong> Equal 4-second phases - used by Navy SEALs for focus.<br>
+        <strong>Deep Calm:</strong> 5-second inhale and exhale - perfect for relaxation.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        Can I use this without an internet connection?
+        <span>▼</span>
+      </div>
+      <div class="faq-answer">
+        Absolutely! TRANQUIL works completely offline once loaded. All features including stress tracking, journaling, and breathing exercises work without internet.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        How do I export my data?
+        <span>▼</span>
+      </div>
+      <div class="faq-answer">
+        Go to Settings → Data & Privacy → Export My Data. You'll get a JSON file with all your wellness data that you can backup or analyze externally.
+      </div>
+    </div>
+
+    <div class="faq-item">
+      <div class="faq-question" onclick="toggleFAQ(this)">
+        What do the stress scores mean?
+        <span>▼</span>
+      </div>
+      <div class="faq-answer">
+        <strong>0-30:</strong> Low Stress - You're doing great!<br>
+        <strong>31-60:</strong> Medium Stress - Consider relaxation techniques<br>
+        <strong>61-100:</strong> High Stress - Take a break, try breathing exercises
+      </div>
+    </div>
+
+    <div class="daily-insight" style="margin-top: 16px;">
+      <strong>💡 Pro Tip</strong>
+      <p>Combine breathing exercises with nature sounds for maximum relaxation. Try the 4-7-8 technique while listening to rain sounds!</p>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+function toggleFAQ(element) {
+  const answer = element.nextElementSibling;
+  const arrow = element.querySelector('span');
+  element.classList.toggle('active');
+  answer.classList.toggle('show');
+  arrow.textContent = answer.classList.contains('show') ? '▲' : '▼';
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,156 @@
+/* ============================================
+   CALENDAR MODULE STYLES
+   ============================================ */
+
+.calendar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+  margin-bottom: 20px;
+}
+
+.calendar-day-name {
+  text-align: center;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--text3);
+  padding: 8px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.calendar-day {
+  aspect-ratio: 1;
+  background: var(--card);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+  font-size: 0.8rem;
+  position: relative;
+}
+
+.calendar-day.empty {
+  background: transparent;
+  border: 1px dashed var(--bg2);
+  cursor: default;
+}
+
+.calendar-day.has-mood {
+  background: linear-gradient(135deg, var(--purple-bg), var(--card));
+  border-color: var(--purple);
+}
+
+.calendar-day:hover:not(.empty) {
+  transform: scale(1.05);
+  box-shadow: var(--shadow-sm);
+}
+
+.mood-emoji-cal {
+  font-size: 1.2rem;
+  transition: transform 0.2s;
+}
+
+.calendar-day:hover .mood-emoji-cal {
+  transform: scale(1.1);
+}
+
+.day-number {
+  font-size: 0.7rem;
+  font-weight: 600;
+  margin-top: 2px;
+  color: var(--text2);
+}
+
+.calendar-day.has-mood .day-number {
+  color: var(--purple);
+  font-weight: 700;
+}
+
+.mood-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.mood-stat {
+  text-align: center;
+  padding: 8px;
+  background: var(--card);
+  border-radius: var(--radius-sm);
+  transition: transform 0.2s;
+  cursor: pointer;
+}
+
+.mood-stat:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.mood-stat-emoji {
+  font-size: 1.2rem;
+}
+
+.mood-stat-count {
+  font-weight: 800;
+  font-size: 0.9rem;
+  color: var(--purple);
+}
+
+/* Tooltip for day info */
+.calendar-day[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--text);
+  color: white;
+  font-size: 0.7rem;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s;
+  z-index: 10;
+}
+
+.calendar-day:hover[data-tooltip]::after {
+  opacity: 1;
+}
+
+/* Responsive */
+@media (max-width: 430px) {
+  .calendar-grid {
+    gap: 4px;
+  }
+  
+  .mood-emoji-cal {
+    font-size: 1rem;
+  }
+  
+  .day-number {
+    font-size: 0.65rem;
+  }
+  
+  .mood-stat-emoji {
+    font-size: 1rem;
+  }
+  
+  .mood-stat-count {
+    font-size: 0.8rem;
+  }
+}

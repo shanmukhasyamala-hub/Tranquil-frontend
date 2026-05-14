@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – Home</title>
+  
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  
+  <!-- PWA -->
+  <link rel="manifest" href="/pwa/manifest.json">
+  <meta name="theme-color" content="#7c6fcd">
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" title="AI Tips" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn active" title="Profile" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" title="Settings" onclick="window.location.href='settings.html'">⚙️</button>
+       <button class="icon-btn" id="authHeaderBtn" onclick="handleAuth()">🔐</button>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content">
+
+    <!-- GREETING -->
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:18px;">
+      <div>
+        <p style="font-size:0.85rem;color:var(--text2);font-weight:500;" id="greeting">Good evening,</p>
+        <h2 style="font-size:1.5rem;font-weight:800;" id="userName">Shanmukha 🧘</h2>
+      </div>
+      <div style="text-align:right;">
+        <p style="font-size:0.72rem;color:var(--text3);font-weight:600;">Today</p>
+        <p style="font-size:0.95rem;font-weight:800;" id="todayDate">Mar 27</p>
+      </div>
+    </div>
+
+    <!-- STRESS GAUGE CARD -->
+    <div class="card card-pad" style="margin-bottom:16px;">
+      <div style="text-align:center;font-size:0.7rem;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;color:var(--text3);margin-bottom:4px;">
+        CURRENT STRESS LEVEL
+      </div>
+      <div class="gauge-wrap">
+        <div class="gauge-svg-wrap">
+          <svg class="gauge-svg" viewBox="0 0 200 110" id="gaugeSvg"></svg>
+          <div class="gauge-value">
+            <div class="gauge-number" id="gaugeNumber">38</div>
+            <div class="gauge-label">STRESS SCORE</div>
+          </div>
+        </div>
+        <div class="gauge-status" id="gaugeStatus">Medium Stress</div>
+        <div class="live-text"><span class="live-dot"></span>Live monitoring active</div>
+      </div>
+    </div>
+
+    <!-- METRICS ROW -->
+    <div class="metrics-row">
+      <div class="metric-card">
+        <div class="metric-icon-circle" style="background:#ffe5e5;">❤️</div>
+        <div class="metric-val" id="bpmVal" style="color:#e85c5c;">75</div>
+        <div class="metric-unit">BPM</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon-circle" style="background:#fff0e0;">🌡️</div>
+        <div class="metric-val" id="tempVal" style="color:#f4845f;">36.3°</div>
+        <div class="metric-unit">Skin °C</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-icon-circle" style="background:#e0f0ff;">⚡</div>
+        <div class="metric-val" id="motionVal" style="color:#5b8fe0;">35</div>
+        <div class="metric-unit">Motion</div>
+      </div>
+    </div>
+
+    <!-- QUICK ACTIONS -->
+    <div class="section-label">QUICK ACTIONS</div>
+    <div class="quick-grid">
+      <a href="breathe.html" class="quick-card">
+        <span class="quick-icon">🌬️</span>
+        <span class="quick-name">Breathe</span>
+      </a>
+      <a href="sounds.html" class="quick-card">
+        <span class="quick-icon">🎵</span>
+        <span class="quick-name">Sounds</span>
+      </a>
+      <a href="journal.html" class="quick-card">
+        <span class="quick-icon">📔</span>
+        <span class="quick-name">Journal</span>
+      </a>
+      <a href="sleep.html" class="quick-card">
+        <span class="quick-icon">😴</span>
+        <span class="quick-name">Sleep</span>
+      </a>
+    </div>
+
+    <!-- EMERGENCY BTN -->
+    <button class="emergency-btn" onclick="triggerEmergency()">
+      ⚡ Emergency Calm Mode
+    </button>
+
+  </main>
+
+  <!-- BOTTOM NAV -->
+  <nav class="bottom-nav">
+    <a class="nav-item active" data-page="home" href="home.html">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </a>
+    <a class="nav-item" data-page="breathe" href="breathe.html">
+      <span class="nav-icon">🌬️</span>
+      <span class="nav-label">Breathe</span>
+    </a>
+    <a class="nav-item" data-page="sounds" href="sounds.html">
+      <span class="nav-icon">🎵</span>
+      <span class="nav-label">Sounds</span>
+    </a>
+    <a class="nav-item" data-page="journal" href="journal.html">
+      <span class="nav-icon">📔</span>
+      <span class="nav-label">Journal</span>
+    </a>
+    <a class="nav-item" data-page="analytics" href="analytics.html">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Analytics</span>
+    </a>
+    <a class="nav-item" href="menu-hub.html">
+      <span class="nav-icon">🌟</span>
+      <span class="nav-label">Hub</span>
+    </a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<!-- JavaScript -->
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const profile = getProfile();
+    document.getElementById('userName').textContent = profile.name + ' ' + profile.avatar;
+    document.getElementById('greeting').textContent  = getGreeting() + ',';
+    document.getElementById('todayDate').textContent  = getTodayShort();
+    syncHeaderAvatar();
+
+    // Draw gauge with latest stress
+    const latest = getLatestStress();
+    updateGauge(latest.score);
+
+    // Start live updates
+    startLiveStress(score => updateGauge(score));
+
+    // Animate metrics
+    animateMetrics();
+  });
+
+  function updateGauge(score) {
+    const colors = score < 30 ? '#5bbf8a' : score < 60 ? '#7c6fcd' : '#e85c5c';
+    const labels = score < 30 ? 'Low Stress' : score < 60 ? 'Medium Stress' : 'High Stress';
+    drawGauge(document.getElementById('gaugeSvg'), score, colors);
+    document.getElementById('gaugeNumber').textContent = score;
+    document.getElementById('gaugeStatus').textContent = labels;
+    document.getElementById('gaugeStatus').style.color = colors;
+    document.getElementById('gaugeStatus').style.background = colors + '18';
+  }
+
+  function animateMetrics() {
+    setInterval(() => {
+      const bpm = 65 + Math.floor(Math.random() * 25);
+      const temp = (36.0 + Math.random() * 0.8).toFixed(1);
+      const motion = Math.floor(Math.random() * 60) + 10;
+      document.getElementById('bpmVal').textContent  = bpm;
+      document.getElementById('tempVal').textContent = temp + '°';
+      document.getElementById('motionVal').textContent = motion;
+    }, 2500);
+  }
+
+  function triggerEmergency() {
+    showToast('🧘 Emergency Calm Mode Activated — Breathe slowly...');
+    setTimeout(() => window.location.href = 'breathe.html', 1200);
+  }
+
+  window.addEventListener('beforeunload', stopLiveStress);
+</script>
+<script>
+  function handleAuth() {
+    const token = localStorage.getItem('tranquil_token');
+    if (token) {
+      localStorage.removeItem('tranquil_token');
+      localStorage.removeItem('tranquil_profile');
+      if (typeof showToast !== 'undefined') showToast('👋 Logged out');
+      setTimeout(() => location.reload(), 500);
+    } else {
+      window.location.href = 'login.html';
+    }
+  }
+  
+  function updateAuthIcon() {
+    const btn = document.getElementById('authHeaderBtn');
+    if (btn) {
+      const token = localStorage.getItem('tranquil_token');
+      btn.textContent = token ? '🚪' : '🔐';
+    }
+  }
+  updateAuthIcon();
+</script>
+
+</body>
+</html>

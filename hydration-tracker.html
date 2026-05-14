@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRANQUIL – Hydration Tracker</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    .water-glass {
+      width: 120px;
+      height: 160px;
+      border: 3px solid var(--purple);
+      border-radius: 0 0 30px 30px;
+      margin: 20px auto;
+      position: relative;
+      overflow: hidden;
+      background: rgba(124,111,205,0.1);
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .water-glass:hover {
+      transform: scale(1.02);
+    }
+    .water-fill {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(135deg, #4db8a4, #7c6fcd);
+      transition: height 0.3s ease;
+    }
+    .water-amount {
+      text-align: center;
+      margin: 10px 0;
+      font-size: 1.2rem;
+      font-weight: 800;
+    }
+    .glass-buttons {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      margin: 20px 0;
+    }
+    .glass-btn {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--card);
+      border: 2px solid var(--purple);
+      font-size: 1.2rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .glass-btn:hover {
+      background: var(--purple);
+      color: white;
+      transform: scale(1.05);
+    }
+    .daily-goal {
+      text-align: center;
+      padding: 12px;
+      background: var(--purple-bg);
+      border-radius: var(--radius-sm);
+      margin-top: 16px;
+    }
+    .history-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 12px;
+      border-bottom: 1px solid var(--bg2);
+    }
+    .history-item:last-child {
+      border-bottom: none;
+    }
+    
+    /* Dark mode specific overrides for this page */
+    body.dark-mode .water-glass {
+      background: rgba(157, 140, 255, 0.15) !important;
+      border-color: #9d8cff !important;
+    }
+    
+    body.dark-mode .water-fill {
+      background: linear-gradient(135deg, #5dc9b3, #9d8cff) !important;
+    }
+    
+    body.dark-mode .water-amount {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .glass-btn {
+      background: #1e1e2e !important;
+      border-color: #9d8cff !important;
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .glass-btn:hover {
+      background: #9d8cff !important;
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .daily-goal {
+      background: rgba(157, 140, 255, 0.15) !important;
+    }
+    
+    body.dark-mode .daily-goal strong {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .daily-goal p {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .history-item {
+      border-bottom-color: #2d2d44 !important;
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .history-item span:first-child {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .history-item span:last-child {
+      color: #5dc9b3 !important;
+    }
+    
+    body.dark-mode .journal-empty {
+      color: #6c7892 !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Hydration Tracker 💧</h1>
+    <p class="page-subtitle">Stay hydrated for better wellness</p>
+
+    <div class="card card-pad" style="text-align: center;">
+      <div class="water-glass" onclick="addWater(250)">
+        <div class="water-fill" id="waterFill"></div>
+      </div>
+      <div class="water-amount">
+        <span id="todayAmount">0</span> ml / <span id="dailyGoal">2000</span> ml
+      </div>
+      
+      <div class="glass-buttons">
+        <button class="glass-btn" onclick="addWater(200)">200ml</button>
+        <button class="glass-btn" onclick="addWater(250)">250ml</button>
+        <button class="glass-btn" onclick="addWater(500)">500ml</button>
+      </div>
+      
+      <button class="btn btn-ghost" onclick="resetToday()" style="width: 100%;">Reset Today</button>
+      
+      <div class="daily-goal">
+        <strong>💡 Daily Goal: 2000ml (8 glasses)</strong>
+        <p style="font-size: 0.75rem; margin-top: 4px;">Tap the glass to add water!</p>
+      </div>
+    </div>
+
+    <div class="section-label" style="margin-top: 20px;">📅 RECENT HISTORY</div>
+    <div class="card card-pad" style="max-height: 300px; overflow-y: auto;" id="historyContainer"></div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+const DAILY_GOAL = 2000;
+
+function getHydrationData() {
+  return JSON.parse(localStorage.getItem('tranquil_hydration') || '{"history":[]}');
+}
+
+function saveHydrationData(data) {
+  localStorage.setItem('tranquil_hydration', JSON.stringify(data));
+}
+
+function getTodayKey() {
+  return new Date().toISOString().slice(0, 10);
+}
+
+function getTodayAmount() {
+  const data = getHydrationData();
+  const today = data.history.find(h => h.date === getTodayKey());
+  return today ? today.amount : 0;
+}
+
+function addWater(ml) {
+  const data = getHydrationData();
+  const todayKey = getTodayKey();
+  let todayEntry = data.history.find(h => h.date === todayKey);
+  
+  if (todayEntry) {
+    todayEntry.amount += ml;
+  } else {
+    data.history.unshift({ date: todayKey, amount: ml });
+  }
+  
+  saveHydrationData(data);
+  updateUI();
+  if (typeof showToast !== 'undefined') showToast(`+${ml}ml water logged!`);
+  
+  const newAmount = getTodayAmount();
+  if (newAmount >= DAILY_GOAL && newAmount - ml < DAILY_GOAL) {
+    if (typeof showToast !== 'undefined') showToast('🎉 Congratulations! You reached your daily hydration goal!');
+    playCheer();
+  }
+}
+
+function resetToday() {
+  const data = getHydrationData();
+  data.history = data.history.filter(h => h.date !== getTodayKey());
+  saveHydrationData(data);
+  updateUI();
+  if (typeof showToast !== 'undefined') showToast('Today reset');
+}
+
+function updateUI() {
+  const todayAmount = getTodayAmount();
+  const percentage = Math.min(100, (todayAmount / DAILY_GOAL) * 100);
+  
+  const todayAmountEl = document.getElementById('todayAmount');
+  const waterFillEl = document.getElementById('waterFill');
+  const historyContainer = document.getElementById('historyContainer');
+  
+  if (todayAmountEl) todayAmountEl.textContent = todayAmount;
+  if (waterFillEl) waterFillEl.style.height = `${percentage}%`;
+  
+  if (historyContainer) {
+    const data = getHydrationData();
+    const recentHistory = data.history.slice(0, 7);
+    
+    if (recentHistory.length === 0) {
+      historyContainer.innerHTML = '<div class="journal-empty">No hydration data yet</div>';
+    } else {
+      historyContainer.innerHTML = recentHistory.map(h => {
+        const date = new Date(h.date);
+        const dateStr = date.toLocaleDateString('en-IN', { month: 'short', day: 'numeric' });
+        const glasses = Math.floor(h.amount / 250);
+        return `
+          <div class="history-item">
+            <span>${dateStr}</span>
+            <span style="font-weight: 700;">${h.amount}ml</span>
+            <span style="color: var(--teal);">${glasses} glasses</span>
+          </div>
+        `;
+      }).join('');
+    }
+  }
+}
+
+function playCheer() {
+  try {
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const gain = audioCtx.createGain();
+    gain.connect(audioCtx.destination);
+    gain.gain.value = 0.15;
+    
+    [523.25, 659.25, 783.99].forEach((freq, i) => {
+      setTimeout(() => {
+        const osc = audioCtx.createOscillator();
+        osc.frequency.value = freq;
+        osc.connect(gain);
+        osc.start();
+        osc.stop(audioCtx.currentTime + 0.3);
+      }, i * 150);
+    });
+  } catch(e) {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+  updateUI();
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

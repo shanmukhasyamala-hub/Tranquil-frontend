@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – Menu Hub</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <link rel="stylesheet" href="css/modules/menu-hub.css"/>
+  <style>
+    /* ===== EXACT DARK MODE STYLES FOR MENU HUB ===== */
+    body.dark-mode .hub-stat-card {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .hub-stat-value {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .hub-stat-label {
+      color: #6c7892 !important;
+    }
+    
+    body.dark-mode .hub-greeting {
+      background: linear-gradient(135deg, #1a1a2e, #1e1e2e) !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .greeting-text strong {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .greeting-text p {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .feature-card {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .feature-card:hover {
+      border-color: #9d8cff !important;
+      background: #252b3d !important;
+    }
+    
+    body.dark-mode .feature-name {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .feature-desc {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .feature-badge {
+      background: #9d8cff !important;
+      color: #1a1f2e !important;
+    }
+    
+    body.dark-mode .activity-item {
+      background: #1e1e2e !important;
+      border-bottom-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .activity-icon {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .activity-text {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .daily-tip-card {
+      background: rgba(157, 140, 255, 0.1) !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .daily-tip-card strong {
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .daily-tip-card p {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .section-label {
+      color: #9d8cff !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <!-- TOP HEADER -->
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <!-- PAGE CONTENT -->
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    
+    <div class="hub-header">
+      <h1 class="page-title">Wellness Hub 🌟</h1>
+      <p class="page-subtitle">All your wellness tools in one place</p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="hub-stats">
+      <div class="hub-stat-card">
+        <div class="hub-stat-icon">📊</div>
+        <div class="hub-stat-value" id="hubStressAvg">--</div>
+        <div class="hub-stat-label">Avg Stress</div>
+      </div>
+      <div class="hub-stat-card">
+        <div class="hub-stat-icon">😊</div>
+        <div class="hub-stat-value" id="hubMoodCount">0</div>
+        <div class="hub-stat-label">Mood Entries</div>
+      </div>
+      <div class="hub-stat-card">
+        <div class="hub-stat-icon">💧</div>
+        <div class="hub-stat-value" id="hubWaterToday">0</div>
+        <div class="hub-stat-label">Water Today</div>
+      </div>
+      <div class="hub-stat-card">
+        <div class="hub-stat-icon">🏆</div>
+        <div class="hub-stat-value" id="hubPoints">0</div>
+        <div class="hub-stat-label">Points</div>
+      </div>
+    </div>
+
+    <!-- Greeting Message -->
+    <div class="hub-greeting" id="hubGreeting">
+      <div class="greeting-icon">🌟</div>
+      <div class="greeting-text">
+        <strong id="greetingName">Welcome!</strong>
+        <p id="greetingMessage">Complete daily challenges to earn points</p>
+      </div>
+    </div>
+
+    <!-- Feature Grid - All 10 Features as Cards -->
+    <div class="feature-grid" id="featureGrid">
+      <!-- Meditation -->
+      <div class="feature-card" onclick="openFeature('meditation.html')" data-feature="meditation">
+        <div class="feature-icon">🧘</div>
+        <div class="feature-name">Meditation</div>
+        <div class="feature-desc">Guided sessions</div>
+        <div class="feature-badge" id="meditationBadge">0</div>
+      </div>
+
+      <!-- Weekly Report -->
+      <div class="feature-card" onclick="openFeature('weekly-report.html')" data-feature="weekly">
+        <div class="feature-icon">📊</div>
+        <div class="feature-name">Weekly Report</div>
+        <div class="feature-desc">Your summary</div>
+        <div class="feature-badge" id="weeklyBadge">New</div>
+      </div>
+
+      <!-- Achievements -->
+      <div class="feature-card" onclick="openFeature('achievements.html')" data-feature="achievements">
+        <div class="feature-icon">🏆</div>
+        <div class="feature-name">Achievements</div>
+        <div class="feature-desc">Earn badges</div>
+        <div class="feature-badge" id="achievementsBadge">0</div>
+      </div>
+
+      <!-- Weather & Mood -->
+      <div class="feature-card" onclick="openFeature('weather-mood.html')" data-feature="weather">
+        <div class="feature-icon">🌤️</div>
+        <div class="feature-name">Weather & Mood</div>
+        <div class="feature-desc">Weather insights</div>
+      </div>
+
+      <!-- Daily Quotes -->
+      <div class="feature-card" onclick="openFeature('daily-quotes.html')" data-feature="quotes">
+        <div class="feature-icon">💭</div>
+        <div class="feature-name">Daily Quotes</div>
+        <div class="feature-desc">Inspiration</div>
+      </div>
+
+      <!-- Hydration Tracker -->
+      <div class="feature-card" onclick="openFeature('hydration-tracker.html')" data-feature="hydration">
+        <div class="feature-icon">💧</div>
+        <div class="feature-name">Hydration</div>
+        <div class="feature-desc">Track water</div>
+        <div class="feature-badge" id="hydrationBadge">0</div>
+      </div>
+
+      <!-- Exercises -->
+      <div class="feature-card" onclick="openFeature('exercises.html')" data-feature="exercises">
+        <div class="feature-icon">🏋️</div>
+        <div class="feature-name">Exercises</div>
+        <div class="feature-desc">Stress relief</div>
+      </div>
+
+      <!-- Calendar -->
+      <div class="feature-card" onclick="openFeature('calendar.html')" data-feature="calendar">
+        <div class="feature-icon">📅</div>
+        <div class="feature-name">Mood Calendar</div>
+        <div class="feature-desc">View your journey</div>
+      </div>
+
+      <!-- Help Guide -->
+      <div class="feature-card" onclick="openFeature('help-guide.html')" data-feature="help">
+        <div class="feature-icon">❓</div>
+        <div class="feature-name">Help Guide</div>
+        <div class="feature-desc">Get started</div>
+      </div>
+
+      <!-- Challenges -->
+      <div class="feature-card" onclick="openFeature('challenges.html')" data-feature="challenges">
+        <div class="feature-icon">🎯</div>
+        <div class="feature-name">Challenges</div>
+        <div class="feature-desc">Daily tasks</div>
+        <div class="feature-badge" id="challengesBadge">0</div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="hub-section">
+      <div class="section-label">RECENT ACTIVITY</div>
+      <div class="activity-list" id="activityList">
+        <div class="activity-item">
+          <div class="activity-icon">✨</div>
+          <div class="activity-text">Complete your first challenge to see activity here</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Tip -->
+    <div class="daily-tip-card">
+      <div class="tip-icon">💡</div>
+      <div class="tip-content">
+        <strong>Daily Tip</strong>
+        <p id="dailyTip">Consistent small habits lead to big changes over time.</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- BOTTOM NAVIGATION -->
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html">
+      <span class="nav-icon">🏠</span>
+      <span class="nav-label">Home</span>
+    </a>
+    <a class="nav-item" href="breathe.html">
+      <span class="nav-icon">🌬️</span>
+      <span class="nav-label">Breathe</span>
+    </a>
+    <a class="nav-item" href="sounds.html">
+      <span class="nav-icon">🎵</span>
+      <span class="nav-label">Sounds</span>
+    </a>
+    <a class="nav-item" href="journal.html">
+      <span class="nav-icon">📔</span>
+      <span class="nav-label">Journal</span>
+    </a>
+    <a class="nav-item" href="analytics.html">
+      <span class="nav-icon">📊</span>
+      <span class="nav-label">Analytics</span>
+    </a>
+    <a class="nav-item active" href="menu-hub.html">
+      <span class="nav-icon">🌟</span>
+      <span class="nav-label">Hub</span>
+    </a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+<script src="js/modules/menu-hub.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

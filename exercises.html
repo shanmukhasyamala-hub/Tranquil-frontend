@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TRANQUIL – Stress Relief Exercises</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+  <style>
+    .exercise-card {
+      background: var(--card);
+      border-radius: var(--radius-sm);
+      padding: 16px;
+      margin-bottom: 12px;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .exercise-card:hover {
+      transform: translateX(4px);
+      border-color: var(--purple);
+    }
+    .exercise-header {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+    .exercise-icon {
+      font-size: 1.8rem;
+    }
+    .exercise-title {
+      font-weight: 800;
+      font-size: 1rem;
+    }
+    .exercise-desc {
+      font-size: 0.8rem;
+      color: var(--text2);
+      margin-left: 48px;
+    }
+    .exercise-duration {
+      display: inline-block;
+      background: var(--purple-bg);
+      padding: 2px 8px;
+      border-radius: 100px;
+      font-size: 0.7rem;
+      margin-top: 6px;
+    }
+    .exercise-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .exercise-modal.hidden { display: none; }
+    .exercise-modal-content {
+      background: white;
+      border-radius: 24px;
+      max-width: 400px;
+      width: 100%;
+      padding: 24px;
+      text-align: center;
+    }
+    
+    /* Dark mode specific overrides for this page */
+    body.dark-mode .exercise-card {
+      background: #1e1e2e !important;
+      border-color: #2d2d44 !important;
+    }
+    
+    body.dark-mode .exercise-card:hover {
+      border-color: #9d8cff !important;
+      background: #252b3d !important;
+    }
+    
+    body.dark-mode .exercise-title {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode .exercise-desc {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode .exercise-duration {
+      background: rgba(157, 140, 255, 0.15) !important;
+      color: #9d8cff !important;
+    }
+    
+    body.dark-mode .exercise-modal-content {
+      background: #1e1e2e !important;
+      border: 1px solid #2d2d44 !important;
+    }
+    
+    body.dark-mode .exercise-modal-content h3 {
+      color: #ffffff !important;
+    }
+    
+    body.dark-mode #modalDesc {
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode #modalInstructions {
+      background: #252b3d !important;
+      color: #a8b3cf !important;
+    }
+    
+    body.dark-mode #modalInstructions li {
+      color: #a8b3cf !important;
+    }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <button class="back-btn" onclick="history.back()">← Back</button>
+    <h1 class="page-title">Stress Relief Exercises 🧘‍♀️</h1>
+    <p class="page-subtitle">Quick exercises to reduce stress</p>
+
+    <div id="exercisesList"></div>
+  </main>
+
+  <div id="exerciseModal" class="exercise-modal hidden">
+    <div class="exercise-modal-content">
+      <div id="modalIcon" style="font-size: 3rem; margin-bottom: 12px;">🧘</div>
+      <h3 id="modalTitle">Exercise Name</h3>
+      <p id="modalDesc" style="margin: 16px 0;"></p>
+      <div id="modalInstructions" style="text-align: left; padding: 12px; border-radius: 12px; margin: 12px 0; font-size: 0.85rem;"></div>
+      <button class="btn btn-primary btn-full" onclick="closeExerciseModal()">Got it</button>
+    </div>
+  </div>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item active" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+const exercises = [
+  {
+    title: "Shoulder Rolls",
+    desc: "Release tension in shoulders and neck",
+    icon: "🔄",
+    duration: "1 min",
+    instructions: [
+      "Sit or stand with your back straight",
+      "Slowly roll your shoulders forward in a circular motion for 30 seconds",
+      "Then roll them backward for 30 seconds",
+      "Repeat twice for best results"
+    ]
+  },
+  {
+    title: "Neck Stretch",
+    desc: "Relieve neck stiffness and headaches",
+    icon: "🦒",
+    duration: "2 min",
+    instructions: [
+      "Gently tilt your head to the right, bringing ear toward shoulder",
+      "Hold for 15-20 seconds, feeling the stretch",
+      "Repeat on left side",
+      "Do 3 times on each side"
+    ]
+  },
+  {
+    title: "Deep Breathing",
+    desc: "Calm your nervous system",
+    icon: "🌬️",
+    duration: "3 min",
+    instructions: [
+      "Find a comfortable seated position",
+      "Inhale deeply through nose for 4 seconds",
+      "Hold for 4 seconds",
+      "Exhale slowly through mouth for 6 seconds",
+      "Repeat 10 times"
+    ]
+  },
+  {
+    title: "Desk Stretch",
+    desc: "Perfect for office workers",
+    icon: "💺",
+    duration: "2 min",
+    instructions: [
+      "Stand up and reach arms overhead",
+      "Interlace fingers and press palms up",
+      "Lean gently to the right, hold 10 seconds",
+      "Lean left, hold 10 seconds",
+      "Roll shoulders back 5 times"
+    ]
+  },
+  {
+    title: "Progressive Relaxation",
+    desc: "Release tension throughout body",
+    icon: "😌",
+    duration: "5 min",
+    instructions: [
+      "Sit or lie down comfortably",
+      "Tense your feet for 5 seconds, then release",
+      "Move up to calves, thighs, stomach, chest",
+      "Continue to hands, arms, shoulders, face",
+      "Notice the difference between tension and relaxation"
+    ]
+  },
+  {
+    title: "Walking Meditation",
+    desc: "Mindful movement",
+    icon: "🚶",
+    duration: "5-10 min",
+    instructions: [
+      "Find a quiet path or room",
+      "Walk slowly, focusing on each step",
+      "Notice the sensation of your feet touching the ground",
+      "If mind wanders, gently bring focus back to walking",
+      "Continue for 5-10 minutes"
+    ]
+  }
+];
+
+function renderExercises() {
+  const container = document.getElementById('exercisesList');
+  if (!container) return;
+  
+  container.innerHTML = exercises.map((ex, idx) => `
+    <div class="exercise-card" onclick="showExercise(${idx})">
+      <div class="exercise-header">
+        <div class="exercise-icon">${ex.icon}</div>
+        <div class="exercise-title">${ex.title}</div>
+      </div>
+      <div class="exercise-desc">${ex.desc}</div>
+      <span class="exercise-duration">⏱️ ${ex.duration}</span>
+    </div>
+  `).join('');
+}
+
+function showExercise(idx) {
+  const ex = exercises[idx];
+  const modalIcon = document.getElementById('modalIcon');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalDesc = document.getElementById('modalDesc');
+  const modalInstructions = document.getElementById('modalInstructions');
+  const modal = document.getElementById('exerciseModal');
+  
+  if (modalIcon) modalIcon.textContent = ex.icon;
+  if (modalTitle) modalTitle.textContent = ex.title;
+  if (modalDesc) modalDesc.textContent = ex.desc;
+  if (modalInstructions) modalInstructions.innerHTML = ex.instructions.map(i => `• ${i}`).join('<br>');
+  if (modal) modal.classList.remove('hidden');
+  
+  // Log exercise completion
+  const completed = JSON.parse(localStorage.getItem('tranquil_exercises') || '[]');
+  completed.push({ title: ex.title, timestamp: Date.now() });
+  localStorage.setItem('tranquil_exercises', JSON.stringify(completed.slice(-50)));
+}
+
+function closeExerciseModal() {
+  const modal = document.getElementById('exerciseModal');
+  if (modal) modal.classList.add('hidden');
+  if (typeof showToast !== 'undefined') showToast('✓ Great job! Stress relief completed');
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+  renderExercises();
+  
+  // Close modal when clicking outside
+  const modal = document.getElementById('exerciseModal');
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeExerciseModal();
+    });
+  }
+});
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

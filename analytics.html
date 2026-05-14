@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#7c6fcd">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="TRANQUIL">
+<link rel="apple-touch-icon" href="/assets/icons/icon-192.png">
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"/>
+  <title>TRANQUIL – Analytics</title>
+  <link rel="stylesheet" href="css/style.css"/>
+  <link rel="stylesheet" href="css/dark.css"/>
+</head>
+<body>
+
+<div class="app-wrapper">
+
+  <header class="top-header">
+    <div class="header-brand">
+      <div class="header-avatar" id="headerAvatar" onclick="window.location.href='profile.html'">🧘</div>
+      <span class="header-title">TRANQUIL</span>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" onclick="window.location.href='ai-tips.html'">💡</button>
+      <button class="icon-btn" onclick="window.location.href='profile.html'">🧘</button>
+      <button class="icon-btn" onclick="window.location.href='settings.html'">⚙️</button>
+    </div>
+  </header>
+
+  <main class="page-content">
+    <h1 class="page-title">Analytics 📊</h1>
+    <p class="page-subtitle">Your 7-day stress overview</p>
+
+    <!-- STAT CARDS -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="stat-label">AVG SCORE</div>
+        <div class="stat-value" id="avgScore">—</div>
+        <div class="stat-sub">This week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">READINGS</div>
+        <div class="stat-value" id="totalReadings">0</div>
+        <div class="stat-sub">Total logged</div>
+      </div>
+    </div>
+
+    <!-- BAR CHART -->
+    <div class="chart-wrap">
+      <div class="chart-title">Daily Stress Scores</div>
+      <div class="bar-chart" id="barChart">
+        <!-- Rendered by JS -->
+      </div>
+      <div class="chart-legend">
+        <div class="legend-item"><div class="legend-dot" style="background:#5bbf8a;"></div>Low</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#7c6fcd;"></div>Medium</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e85c5c;"></div>High</div>
+      </div>
+    </div>
+
+    <!-- INSIGHT -->
+    <div class="insight-card">
+      <div class="insight-text" id="insightText">
+        — Great start! Keep tracking your stress levels.
+      </div>
+    </div>
+
+    <!-- DAY BREAKDOWN -->
+    <div class="section-label">DAY BREAKDOWN</div>
+    <div class="chart-wrap">
+      <div class="day-breakdown" id="dayBreakdown"></div>
+    </div>
+
+    <p style="font-size:0.73rem;color:var(--text3);text-align:center;margin-top:10px;">
+      Data updates every time the dashboard is open
+    </p>
+  </main>
+
+  <nav class="bottom-nav">
+    <a class="nav-item" href="home.html"><span class="nav-icon">🏠</span><span class="nav-label">Home</span></a>
+    <a class="nav-item" href="breathe.html"><span class="nav-icon">🌬️</span><span class="nav-label">Breathe</span></a>
+    <a class="nav-item" href="sounds.html"><span class="nav-icon">🎵</span><span class="nav-label">Sounds</span></a>
+    <a class="nav-item" href="journal.html"><span class="nav-icon">📔</span><span class="nav-label">Journal</span></a>
+    <a class="nav-item active" href="analytics.html"><span class="nav-icon">📊</span><span class="nav-label">Analytics</span></a>
+    <a class="nav-item" href="menu-hub.html"><span class="nav-icon">🌟</span><span class="nav-label">Hub</span></a>
+  </nav>
+
+</div>
+
+<div class="toast" id="globalToast"></div>
+
+<script src="js/app.js"></script>
+<script src="js/dark.js"></script>
+
+<script>
+  if (typeof syncHeaderAvatar !== 'undefined') syncHeaderAvatar();
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const logs = getStressLogs();
+    const weekly = getWeeklyStats();
+
+    // Stats
+    const withData = weekly.filter(d => d.score > 0);
+    const avg = withData.length
+      ? Math.round(withData.reduce((s,d) => s+d.score, 0) / withData.length)
+      : 0;
+    
+    const avgScoreEl = document.getElementById('avgScore');
+    const totalReadingsEl = document.getElementById('totalReadings');
+    
+    if (avgScoreEl) avgScoreEl.textContent = avg || '—';
+    if (totalReadingsEl) totalReadingsEl.textContent = logs.length;
+
+    // Insight
+    const insights = [
+      'Great start! Keep tracking your stress levels.',
+      'Your stress is trending down — keep going! 📉',
+      'Try the 4-7-8 breathing when stress spikes above 60.',
+      'Consistent small habits reduce stress by up to 40% over time.',
+    ];
+    
+    const insightTextEl = document.getElementById('insightText');
+    if (insightTextEl) {
+      insightTextEl.textContent = '— ' + insights[Math.floor(Math.random() * insights.length)];
+    }
+
+    // Bar chart
+    const chartEl = document.getElementById('barChart');
+    if (chartEl) {
+      const maxScore = Math.max(...weekly.map(d => d.score), 10);
+      chartEl.innerHTML = weekly.map(d => {
+        const h = d.score ? Math.round((d.score / 100) * 90) : 4;
+        const color = d.score < 30 ? '#5bbf8a' : d.score < 60 ? '#7c6fcd' : '#e85c5c';
+        const tip = d.score ? `${d.day}: ${d.score}` : `${d.day}: No data`;
+        return `<div class="bar-col">
+          <div class="bar" style="height:${h}px;background:${d.score?color:'#e0e5f0'};" data-tip="${tip}"></div>
+          <div class="bar-day">${d.day}</div>
+        </div>`;
+      }).join('');
+    }
+
+    // Day breakdown
+    const breakEl = document.getElementById('dayBreakdown');
+    if (breakEl) {
+      breakEl.innerHTML = weekly.map(d => {
+        const pct = d.score ? Math.round(d.score) : 0;
+        const barColor = d.score < 30 ? '#5bbf8a' : d.score < 60 ? '#7c6fcd' : '#e85c5c';
+        return `<div class="day-row">
+          <span class="day-name">${d.day}</span>
+          <div class="day-bar-bg"><div class="day-bar-fill" style="width:${pct}%;background:${barColor};"></div></div>
+          <span class="day-score" style="color:${d.score?barColor:'var(--text3)'};">${d.score||'—'}</span>
+          <span class="day-pts">${d.count?d.count+' pts':''}</span>
+        </div>`;
+      }).join('');
+    }
+  });
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/service-worker.js')
+    .then(reg => console.log('Service Worker registered', reg))
+    .catch(err => console.log('Service Worker failed', err));
+}
+</script>
+
+</body>
+</html>

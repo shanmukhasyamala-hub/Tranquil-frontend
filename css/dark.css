@@ -1,0 +1,385 @@
+/* ============================================
+   TRANQUIL DARK MODE - FINAL WORKING VERSION
+   Inspired by your screenshots
+   ============================================ */
+
+/* Dark Mode Body */
+body.dark-mode {
+    background: #0f0f1a !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .app-wrapper {
+    background: #0f0f1a !important;
+}
+
+body.dark-mode .page-content {
+    background: #0f0f1a !important;
+}
+
+/* ===== HEADER ===== */
+body.dark-mode .top-header {
+    background: #1a1a2e !important;
+    border-bottom: 1px solid #2d2d44 !important;
+}
+
+body.dark-mode .header-title {
+    color: #ffffff !important;
+}
+
+body.dark-mode .header-avatar {
+    background: #2d2d44 !important;
+    color: #9d8cff !important;
+}
+
+body.dark-mode .icon-btn {
+    color: #a8b3cf !important;
+}
+
+body.dark-mode .icon-btn:hover {
+    background: #2d2d44 !important;
+}
+
+/* ===== BOTTOM NAVIGATION ===== */
+body.dark-mode .bottom-nav {
+    background: #1a1a2e !important;
+    border-top: 1px solid #2d2d44 !important;
+}
+
+body.dark-mode .nav-label {
+    color: #6c7892 !important;
+}
+
+body.dark-mode .nav-item.active .nav-label {
+    color: #9d8cff !important;
+}
+
+/* ===== ALL CARDS & CONTAINERS ===== */
+body.dark-mode .card,
+body.dark-mode .metric-card,
+body.dark-mode .quick-card,
+body.dark-mode .stat-card,
+body.dark-mode .profile-card,
+body.dark-mode .toggle-row,
+body.dark-mode .list-item,
+body.dark-mode .privacy-item,
+body.dark-mode .chart-wrap,
+body.dark-mode .journal-entry,
+body.dark-mode .sleep-card,
+body.dark-mode .sound-card,
+body.dark-mode .technique-card,
+body.dark-mode .exercise-card,
+body.dark-mode .pat-card,
+body.dark-mode .hub-stat-card,
+body.dark-mode .feature-card,
+body.dark-mode .achievement-card,
+body.dark-mode .meditation-circle {
+    background: #1a1a2e !important;
+    border-color: #2d2d44 !important;
+}
+
+/* ===== TEXT COLORS ===== */
+body.dark-mode .page-title,
+body.dark-mode h1,
+body.dark-mode h2,
+body.dark-mode h3,
+body.dark-mode .profile-name,
+body.dark-mode .stat-value,
+body.dark-mode .metric-val,
+body.dark-mode .list-item-name,
+body.dark-mode .feature-name,
+body.dark-mode .gauge-number,
+body.dark-mode .phase-timer,
+body.dark-mode .tech-name,
+body.dark-mode .sound-name,
+body.dark-mode .journal-entry .entry-mood {
+    color: #ffffff !important;
+}
+
+body.dark-mode .page-subtitle,
+body.dark-mode .list-item-desc,
+body.dark-mode .feature-desc,
+body.dark-mode .privacy-desc,
+body.dark-mode .entry-note,
+body.dark-mode .tech-desc,
+body.dark-mode .greeting-text p,
+body.dark-mode .activity-text {
+    color: #a8b3cf !important;
+}
+
+body.dark-mode .section-label,
+body.dark-mode .stat-label,
+body.dark-mode .metric-unit,
+body.dark-mode .entry-date,
+body.dark-mode .gauge-label,
+body.dark-mode .rounds-left {
+    color: #6c7892 !important;
+}
+
+/* ===== BUTTONS ===== */
+body.dark-mode .btn-primary {
+    background: #9d8cff !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .btn-primary:hover {
+    background: #7c6fcd !important;
+}
+
+body.dark-mode .btn-ghost {
+    background: transparent !important;
+    border: 1px solid #3d3d5c !important;
+    color: #a8b3cf !important;
+}
+
+body.dark-mode .btn-ghost:hover {
+    background: #2d2d44 !important;
+    color: #9d8cff !important;
+}
+
+body.dark-mode .emergency-btn {
+    background: linear-gradient(135deg, #e85c5c, #c04040) !important;
+    color: white !important;
+}
+
+/* ===== INPUT FIELDS ===== */
+body.dark-mode .input-field,
+body.dark-mode textarea,
+body.dark-mode select {
+    background: #1a1a2e !important;
+    border: 1px solid #3d3d5c !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .input-field:focus,
+body.dark-mode textarea:focus {
+    border-color: #9d8cff !important;
+    outline: none !important;
+}
+
+body.dark-mode .input-field::placeholder {
+    color: #6c7892 !important;
+}
+
+/* ===== TOGGLE SWITCH ===== */
+body.dark-mode .toggle-slider {
+    background: #3d3d5c !important;
+}
+
+body.dark-mode .toggle-switch input:checked + .toggle-slider {
+    background: #9d8cff !important;
+}
+
+/* ===== MOOD BUTTONS ===== */
+body.dark-mode .mood-btn {
+    background: #1a1a2e !important;
+    border: 1px solid #3d3d5c !important;
+}
+
+body.dark-mode .mood-btn.selected {
+    background: rgba(157, 140, 255, 0.2) !important;
+    border-color: #9d8cff !important;
+}
+
+body.dark-mode .mood-label {
+    color: #a8b3cf !important;
+}
+
+body.dark-mode .mood-btn.selected .mood-label {
+    color: #9d8cff !important;
+}
+
+/* ===== STRESS GAUGE ===== */
+body.dark-mode .gauge-status {
+    background: rgba(157, 140, 255, 0.15) !important;
+    color: #9d8cff !important;
+}
+
+body.dark-mode .gauge-number {
+    color: #9d8cff !important;
+}
+
+/* ===== BREATHING TECHNIQUES ===== */
+body.dark-mode .technique-card {
+    background: #1a1a2e !important;
+    border: 1px solid #2d2d44 !important;
+}
+
+body.dark-mode .technique-card:hover {
+    border-color: #9d8cff !important;
+    background: #22223b !important;
+}
+
+body.dark-mode .technique-card.active {
+    background: rgba(157, 140, 255, 0.1) !important;
+    border-color: #9d8cff !important;
+}
+
+body.dark-mode .tech-icon {
+    background: #0f0f1a !important;
+    color: #9d8cff !important;
+}
+
+body.dark-mode .tech-tag {
+    background: rgba(157, 140, 255, 0.15) !important;
+    color: #9d8cff !important;
+}
+
+body.dark-mode .breath-inner {
+    background: linear-gradient(135deg, #1a1a2e, #2d2d44) !important;
+}
+
+body.dark-mode .phase-label {
+    color: #9d8cff !important;
+}
+
+body.dark-mode .session-card {
+    background: #1a1a2e !important;
+    color: white !important;
+}
+
+/* ===== SOUNDS PAGE ===== */
+body.dark-mode .sound-card.playing {
+    background: rgba(157, 140, 255, 0.2) !important;
+    border-color: #9d8cff !important;
+}
+
+body.dark-mode .upload-box {
+    border-color: #3d3d5c !important;
+}
+
+body.dark-mode .upload-box:hover {
+    background: rgba(157, 140, 255, 0.1) !important;
+    border-color: #9d8cff !important;
+}
+
+/* ===== SLEEP PAGE ===== */
+body.dark-mode .time-picker-btn {
+    background: #1a1a2e !important;
+    border-color: #3d3d5c !important;
+    color: white !important;
+}
+
+body.dark-mode .duration-row {
+    background: #0f0f1a !important;
+}
+
+body.dark-mode .star-btn {
+    color: #6c7892 !important;
+}
+
+body.dark-mode .star-btn.lit {
+    color: #ffda6e !important;
+}
+
+/* ===== ANALYTICS PAGE ===== */
+body.dark-mode .insight-card {
+    background: rgba(157, 140, 255, 0.1) !important;
+    border-left-color: #9d8cff !important;
+}
+
+body.dark-mode .day-bar-bg {
+    background: #2d2d44 !important;
+}
+
+body.dark-mode .day-name,
+body.dark-mode .day-score {
+    color: #a8b3cf !important;
+}
+
+/* ===== PROFILE PAGE ===== */
+body.dark-mode .profile-avatar-lg {
+    background: #2d2d44 !important;
+}
+
+body.dark-mode .mini-stat {
+    background: #1a1a2e !important;
+    border-color: #2d2d44 !important;
+}
+
+body.dark-mode .mini-stat-val {
+    color: #9d8cff !important;
+}
+
+body.dark-mode .edit-link {
+    color: #9d8cff !important;
+}
+
+/* ===== AI TIPS PAGE ===== */
+body.dark-mode .tip-card {
+    background: #1a1a2e !important;
+    border-color: #2d2d44 !important;
+}
+
+body.dark-mode .daily-insight {
+    background: rgba(157, 140, 255, 0.1) !important;
+}
+
+body.dark-mode .pill-purple {
+    background: rgba(157, 140, 255, 0.2) !important;
+    color: #9d8cff !important;
+}
+
+body.dark-mode .pill-teal {
+    background: rgba(93, 201, 179, 0.2) !important;
+    color: #5dc9b3 !important;
+}
+
+body.dark-mode .pill-green {
+    background: rgba(125, 206, 154, 0.2) !important;
+    color: #7dce9a !important;
+}
+
+body.dark-mode .pill-orange {
+    background: rgba(255, 159, 122, 0.2) !important;
+    color: #ff9f7a !important;
+}
+
+/* ===== HUB MENU ===== */
+body.dark-mode .hub-greeting {
+    background: linear-gradient(135deg, #1a1a2e, #22223b) !important;
+}
+
+body.dark-mode .activity-item {
+    border-bottom-color: #2d2d44 !important;
+}
+
+body.dark-mode .daily-tip-card {
+    background: rgba(157, 140, 255, 0.1) !important;
+}
+
+/* ===== MODALS ===== */
+body.dark-mode .modal-sheet,
+body.dark-mode .sheet-box {
+    background: #1a1a2e !important;
+}
+
+body.dark-mode .modal-close {
+    background: #2d2d44 !important;
+    color: white !important;
+}
+
+/* ===== TOAST ===== */
+body.dark-mode .toast {
+    background: #2d2d44 !important;
+    color: white !important;
+}
+
+/* ===== SCROLLBAR ===== */
+body.dark-mode ::-webkit-scrollbar-track {
+    background: #0f0f1a !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb {
+    background: #3d3d5c !important;
+}
+
+body.dark-mode ::-webkit-scrollbar-thumb:hover {
+    background: #9d8cff !important;
+}
+
+/* Smooth Transition */
+body.dark-mode,
+body.dark-mode * {
+    transition: background-color 0.3s ease, border-color 0.3s ease, color 0.2s ease !important;
+}

@@ -1,0 +1,146 @@
+/* ============================================
+   TRANQUIL LOGO - Meditation Figure Style
+   ============================================ */
+
+.tranquil-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* Meditation Figure */
+.meditation-figure {
+    width: 120px;
+    height: 120px;
+    position: relative;
+    margin-bottom: 12px;
+}
+
+/* Body - Main shape */
+.figure-body {
+    position: absolute;
+    width: 70px;
+    height: 80px;
+    background: linear-gradient(135deg, 
+        #ff6b9d 0%,      /* Pink */
+        #ff9f7a 25%,     /* Orange */
+        #ffda6e 50%,     /* Yellow */
+        #9d8cff 75%,     /* Purple */
+        #5dc9b3 100%     /* Blue */
+    );
+    border-radius: 50% 50% 40% 40%;
+    bottom: 0;
+    left: 25px;
+    clip-path: polygon(0% 0%, 100% 0%, 100% 85%, 50% 100%, 0% 85%);
+}
+
+/* Head */
+.figure-head {
+    position: absolute;
+    width: 40px;
+    height: 45px;
+    background: linear-gradient(135deg, #ff6b9d, #ff9f7a);
+    border-radius: 50% 50% 45% 45%;
+    top: 0;
+    left: 40px;
+}
+
+/* Left Leg */
+.left-leg {
+    position: absolute;
+    width: 35px;
+    height: 50px;
+    background: linear-gradient(135deg, #9d8cff, #5dc9b3);
+    border-radius: 0 0 30px 30px;
+    bottom: 0;
+    left: 15px;
+    transform: rotate(-15deg);
+    transform-origin: top;
+}
+
+/* Right Leg */
+.right-leg {
+    position: absolute;
+    width: 35px;
+    height: 50px;
+    background: linear-gradient(135deg, #5dc9b3, #4db8a4);
+    border-radius: 0 0 30px 30px;
+    bottom: 0;
+    right: 15px;
+    transform: rotate(15deg);
+    transform-origin: top;
+}
+
+/* Left Arm */
+.left-arm {
+    position: absolute;
+    width: 30px;
+    height: 40px;
+    background: linear-gradient(135deg, #ff9f7a, #ffda6e);
+    border-radius: 30px 30px 20px 20px;
+    top: 35px;
+    left: 5px;
+    transform: rotate(-30deg);
+}
+
+/* Right Arm */
+.right-arm {
+    position: absolute;
+    width: 30px;
+    height: 40px;
+    background: linear-gradient(135deg, #ffda6e, #9d8cff);
+    border-radius: 30px 30px 20px 20px;
+    top: 35px;
+    right: 5px;
+    transform: rotate(30deg);
+}
+
+/* White separator lines (ribbon effect) */
+.separator-line {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.8);
+    width: 2px;
+    height: 100%;
+}
+
+/* Logo Text */
+.logo-text {
+    font-size: 1.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    background: linear-gradient(135deg, #ff6b9d, #9d8cff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-transform: uppercase;
+    margin-top: 8px;
+}
+
+/* Small version for header */
+.logo-small {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-small .mini-figure {
+    width: 32px;
+    height: 32px;
+    background: linear-gradient(135deg, #ff6b9d, #9d8cff);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.logo-small .logo-text-small {
+    font-size: 1rem;
+    font-weight: 700;
+    background: linear-gradient(135deg, #ff6b9d, #9d8cff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
